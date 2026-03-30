@@ -100,8 +100,8 @@
 </div>
 
 <script>
-    // ⚠️ นำ URL ของ Google Apps Script มาใส่ตรงนี้ ⚠️
-    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzCuJoJ8txqAjmm6qtFbisMdk2oDzd7Ys__g765UH8FMAmepa8kGoYVUx7tszNdSKxnpQ/exec"; 
+    // ⚠️ อัปเดต URL ของคุณเรียบร้อยแล้ว ⚠️
+    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxuUCX0kx0fxcXb0oRs7w37I3-lu4d6nL1l6sXDHgkHxT8lSOrWqBQVKfGXPEW6PxZFyw/exec"; 
 
     // โหลดประวัติเมื่อเปิดหน้าเว็บ
     window.onload = function() {
@@ -241,7 +241,7 @@
 
     // ฟังก์ชันส่งข้อมูลไป Google Sheets (ระบบหลังบ้าน)
     function saveToGoogleSheet(task, topic, rq, context, prompt) {
-        if(GOOGLE_SHEET_API_URL === "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้") return; 
+        if(!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL === "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้") return; 
         
         fetch(GOOGLE_SHEET_API_URL, {
             method: 'POST',
@@ -255,7 +255,8 @@
                 generatedPrompt: prompt,
                 timestamp: new Date().toLocaleString('th-TH')
             })
-        }).catch(err => console.error("Error saving to sheet:", err));
+        }).then(() => console.log("ส่งข้อมูลสำเร็จ!"))
+          .catch(err => console.error("Error saving to sheet:", err));
     }
 </script>
 
