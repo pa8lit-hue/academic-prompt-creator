@@ -100,12 +100,23 @@
 </div>
 
 <script>
-    // ⚠️ อัปเดต URL ของคุณเรียบร้อยแล้ว ⚠️
-    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyAZ-Pl2iOT8qWB8lw50Gx2VouXrgkf-wp_fg-JdvbMyWp1b7XtnG88O-Hm60kxiBe8ng/exec"; 
+    // ⚠️ นำ URL ใหม่จาก Apps Script มาใส่ตรงนี้ ⚠️
+    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwa5J6fymqXchLrO943R89cQGjcw78PttRmFnmT-3Nsuuh72yitGRsgktFhk3g2MP6xGA/exec"; 
 
-    // โหลดประวัติเมื่อเปิดหน้าเว็บ
+    // ตัวแปรสำหรับเก็บ IP Address
+    let userIP = "Unknown IP";
+
+    // โหลดประวัติและดึง IP ทันทีที่เปิดหน้าเว็บ
     window.onload = function() {
         renderHistory();
+        
+        // ดึง IP ของผู้ใช้แบบเงียบๆ
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userIP = data.ip;
+            })
+            .catch(error => console.error('ไม่สามารถดึง IP ได้:', error));
     };
 
     function generatePrompt() {
@@ -174,11 +185,8 @@
         saveToGoogleSheet(taskName, topic, researchQuestion, "", promptText); // ส่งไปหลังบ้าน
     }
 
-    // ฟังก์ชันจัดการประวัติ (Local Storage)
     function saveToLocalHistory(task, topic, rq, prompt) {
         let history = JSON.parse(localStorage.getItem('promptHistory')) || [];
-        
-        // เพิ่มข้อมูลใหม่ไปหน้าสุด
         history.unshift({
             date: new Date().toLocaleString('th-TH'),
             task: task.split('(')[0].trim(),
@@ -186,10 +194,7 @@
             rq: rq,
             prompt: prompt
         });
-
-        // เก็บประวัติสูงสุด 10 รายการเพื่อไม่ให้รกเกินไป
         if(history.length > 10) history.pop(); 
-
         localStorage.setItem('promptHistory', JSON.stringify(history));
         renderHistory();
     }
@@ -239,7 +244,7 @@
         });
     }
 
-    // ฟังก์ชันส่งข้อมูลไป Google Sheets (ระบบหลังบ้าน)
+    // ฟังก์ชันส่งข้อมูลไป Google Sheets (ระบบหลังบ้าน) โดยแนบตัวแปร IP เข้าไปด้วย
     function saveToGoogleSheet(task, topic, rq, context, prompt) {
         if(!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL === "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้") return; 
         
@@ -253,9 +258,10 @@
                 researchQuestion: rq,
                 previousContext: context,
                 generatedPrompt: prompt,
+                ipAddress: userIP,           // <--- ส่ง IP ไปที่หลังบ้านตรงนี้
                 timestamp: new Date().toLocaleString('th-TH')
             })
-        }).then(() => console.log("ส่งข้อมูลสำเร็จ!"))
+        }).then(() => console.log("ส่งข้อมูลสำเร็จ! IP: " + userIP))
           .catch(err => console.error("Error saving to sheet:", err));
     }
 </script>
