@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Prompt Creator</title>
+    <title>เครื่องมือสร้าง Prompt สำหรับการวิจัยเพื่อการพัฒนา (ว.ป๋วยฯ มธ.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0f172a;
-            --secondary: #3b82f6;
-            --bg: #f8fafc;
-            --border: #cbd5e1;
-            --text: #334155;
-            --tu-red: #c11b17;
-            --tu-yellow: #f1c40f;
-            --scribbr-orange: #f26b38;
+            /* General Text & Layout */
+            --text-dark: #111827; 
+            --text-main: #374151; 
+            --border: #d1d5db;
+            --bg: #f9fafb;
+
+            /* Thammasat & Puey Colors */
+            --tu-red: #c11b17; /* แดงธรรมศาสตร์ */
+            --tu-yellow: #f1c40f; /* เหลืองธรรมศาสตร์ */
+            --tu-yellow-light: #fffde7; 
+            --puey-earth: #8B5A2B; /* สีน้ำตาลดิน สื่อถึงการลงพื้นที่และชุมชน */
         }
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.6;
@@ -33,6 +36,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             position: relative;
         }
+        /* แถบสีแดง-เหลืองด้านบนสุด */
         .container::before {
             content: '';
             position: absolute;
@@ -41,92 +45,114 @@
             border-top-left-radius: 16px; border-top-right-radius: 16px;
         }
         
-        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; margin-top: 10px; }
-        p.subtitle { text-align: center; color: #64748b; margin-bottom: 20px; }
+        h1 { text-align: center; color: var(--tu-red); margin-bottom: 5px; margin-top: 10px; font-weight: 600; font-size: 26px;}
+        p.subtitle { text-align: center; color: var(--text-main); margin-bottom: 30px; font-weight: 300; font-size: 16px;}
         
-        /* กล่องนิยามความรู้ */
-        .definition-box {
-            background-color: #f1f5f9;
-            border-left: 4px solid var(--primary);
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 30px;
-            font-size: 14.5px;
-            color: #475569;
-        }
-        .definition-box strong { color: var(--primary); }
-        .definition-box .eng-quote { font-style: italic; color: #64748b; margin-top: 5px; display: block; }
-
-        .form-group { margin-bottom: 20px; }
-        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--primary); }
+        .form-group { margin-bottom: 24px; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-dark); }
         input[type="text"], select {
             width: 100%; padding: 12px;
             border: 1px solid var(--border); border-radius: 8px;
             font-family: 'Sarabun', sans-serif; font-size: 15px;
-            box-sizing: border-box; transition: border-color 0.3s;
+            box-sizing: border-box; transition: 0.3s;
+            color: var(--text-dark);
+            background-color: #ffffff;
         }
         input[type="text"]:focus, select:focus {
-            outline: none; border-color: var(--secondary);
+            outline: none; border-color: var(--tu-red); box-shadow: 0 0 0 3px rgba(193, 27, 23, 0.1);
         }
         
+        /* ปุ่มหลัก - ธีมแดง มธ. */
         button {
-            background-color: var(--secondary); color: white;
-            border: none; padding: 14px 20px; border-radius: 8px;
-            cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Sarabun', sans-serif;
-            width: 100%; transition: 0.3s; margin-top: 10px;
+            background-color: var(--tu-red);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Sarabun', sans-serif;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 10px;
         }
-        button:hover { background-color: #2563eb; }
+        button:hover {
+            background-color: var(--tu-yellow);
+            color: var(--tu-red); 
+        }
         
+        /* กล่องผลลัพธ์ */
         .result-box {
-            margin-top: 30px; border: 2px dashed var(--secondary);
-            border-radius: 12px; padding: 20px; background-color: #eff6ff;
+            margin-top: 30px;
+            border: 2px dashed var(--tu-red); 
+            border-radius: 12px;
+            padding: 20px;
+            background-color: var(--tu-yellow-light); 
             display: none;
         }
-        .result-box h3 { margin-top: 0; color: var(--secondary); }
+        .result-box h3 { margin-top: 0; color: var(--tu-red); font-weight: 600; }
         #promptOutput {
-            white-space: pre-wrap; background: white; padding: 15px;
-            border-radius: 8px; border: 1px solid #bfdbfe; font-size: 15px;
-            color: #1e293b; margin-bottom: 15px;
+            white-space: pre-wrap;
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            line-height: 1.7;
         }
         
+        /* กล่องคำแนะนำ */
         .guide-box {
-            margin-top: 20px; padding: 15px; background-color: #fffbeb;
-            border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 14px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white; 
+            border-left: 4px solid var(--tu-yellow);
+            border-radius: 8px;
+            font-size: 14.5px;
+            color: var(--text-main);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .guide-box strong { color: #b45309; }
+        .guide-box strong { color: var(--tu-red); font-size: 16px; }
+        .guide-box ol { margin-top: 10px; margin-bottom: 0; padding-left: 20px; }
+        .guide-box li { margin-bottom: 8px; }
 
+        /* ส่วนเครดิตด้านล่าง */
         .footer-credit {
-            margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
-            text-align: center; font-size: 13px; color: #64748b;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-main);
         }
-        .footer-credit span { font-weight: 600; color: var(--tu-red); }
+        .footer-credit span {
+            font-weight: 600;
+            color: var(--tu-red);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎓 Academic Prompt Creator</h1>
-    <p class="subtitle">เครื่องมือสร้างคำสั่ง AI สำหรับทบทวนวรรณกรรมและงานวิจัย</p>
+    <h1>🎓 AI Prompt Creator for Development Studies</h1>
+    <p class="subtitle">เครื่องมือสร้างคำสั่ง AI สำหรับงานวิจัยด้านการจัดการการพัฒนาและปฏิบัติการพัฒนา</p>
     
-    <div class="definition-box">
-        <strong>💡 Literature Review คืออะไร?</strong><br>
-        การทบทวนวรรณกรรมคือการสำรวจแหล่งข้อมูลทางวิชาการ เพื่อให้เห็นภาพรวมขององค์ความรู้ปัจจุบัน และนำไปสู่การค้นพบทฤษฎี ระเบียบวิธี และช่องว่างการวิจัย
-        <span class="eng-quote">"It provides an overview of current knowledge, allowing you to identify relevant theories, methods, and gaps in the existing research." — Scribbr</span>
-    </div>
-
     <div class="form-group">
-        <label>1. เป้าหมายของงาน (Task)</label>
+        <label>1. เป้าหมายของการวิเคราะห์ (Analysis Task)</label>
         <select id="task">
-            <option value="Evaluate & Identify (วิเคราะห์และหาช่องว่างงานวิจัย)">1. วิเคราะห์ความเชื่อมโยงและหาช่องว่าง (Evaluate & Identify Gaps)</option>
-            <option value="Thematic Outline (จัดกลุ่มตามประเด็น ทฤษฎี และระเบียบวิธี)">2. จัดกลุ่มตามประเด็น ทฤษฎี และระเบียบวิธี (Thematic Outline)</option>
-            <option value="Chronological Outline (จัดกลุ่มตามพัฒนาการตามลำดับเวลา)">3. จัดโครงสร้างตามลำดับเวลา (Chronological Outline)</option>
-            <option value="Synthesize & Write (สังเคราะห์และร่างบทความ)">4. สังเคราะห์และร่างบทความ (Synthesize & Write)</option>
+            <option value="Evaluate & Identify (วิเคราะห์ความเชื่อมโยงและหาช่องว่างงานวิจัยด้านการพัฒนา)">1. วิเคราะห์แนวคิดและหาช่องว่างงานวิจัย (Identify Research Gaps in Development)</option>
+            <option value="Thematic Outline (จัดกลุ่มตามประเด็น ทฤษฎี และปฏิบัติการพัฒนา)">2. จัดกลุ่มตามกระบวนทัศน์ ทฤษฎี และการปฏิบัติการพัฒนา (Thematic Outline)</option>
+            <option value="Critical Synthesis (สังเคราะห์วรรณกรรมเชิงวิพากษ์เพื่อการเปลี่ยนแปลงสังคม)">3. สังเคราะห์วรรณกรรมเชิงวิพากษ์เพื่อการเปลี่ยนแปลงสังคม (Critical Synthesis)</option>
+            <option value="Methodology Review (สกัดวิธีวิทยาการวิจัยเชิงปริมาณและคุณภาพ)">4. สกัดวิธีวิทยาการวิจัย (Research Methodology Review)</option>
         </select>
     </div>
 
     <div class="form-group">
-        <label>2. หัวข้องานวิจัย / ประเด็นที่สนใจ (Topic)</label>
-        <input type="text" id="topic" placeholder="เช่น นโยบายความยั่งยืน, การพัฒนาชุมชน, ESG">
+        <label>2. ประเด็น/ปรากฏการณ์ทางสังคมที่สนใจ (Social Phenomenon / Topic)</label>
+        <input type="text" id="topic" placeholder="เช่น การเปลี่ยนผ่านชนบท-เมือง, นโยบาย ESG, ภาคประชาสังคม, เศรษฐกิจฐานราก">
     </div>
 
     <div class="form-group">
@@ -139,19 +165,20 @@
         </select>
     </div>
 
-    <button onclick="generatePrompt()">✨ สร้าง Prompt ทันที</button>
+    <button onclick="generatePrompt()">✨ สร้างคำสั่งสำหรับวิเคราะห์วรรณกรรม</button>
 
     <div id="resultArea" class="result-box">
-        <h3>📋 Prompt ของคุณพร้อมแล้ว!</h3>
+        <h3>📋 คำสั่ง (Prompt) ของท่านพร้อมแล้ว!</h3>
         <div id="promptOutput"></div>
-        <button onclick="copyToClipboard()" style="background-color: #10b981;">📋 คัดลอก Prompt</button>
+        <button onclick="copyToClipboard()" style="background-color: var(--tu-red); color: white;">📋 คัดลอกคำสั่งเพื่อนำไปใช้งาน</button>
         
         <div class="guide-box">
-            <strong>💡 คำแนะนำวิธีใช้งาน:</strong>
-            <ul style="margin-top: 5px; padding-left: 20px; margin-bottom: 0;">
-                <li><strong>สำหรับ Claude / ChatGPT:</strong> กดคัดลอก Prompt ด้านบนไปวาง แล้วกด <b>"แนบไฟล์ PDF"</b> งานวิจัยของคุณ ส่งไปพร้อมกันได้เลย</li>
-                <li><strong>สำหรับ Gemini:</strong> อัปโหลดไฟล์ PDF ไว้ใน Google Drive ของคุณ แล้วสั่งให้ Gemini เข้าไปอ่าน หรือก๊อปปี้เนื้อหาใน PDF มาแปะต่อท้าย Prompt นี้ได้เลย</li>
-            </ul>
+            <strong>💡 คำแนะนำสำหรับการวิเคราะห์วรรณกรรมเชิงลึก:</strong>
+            <ol>
+                <li>กดปุ่ม <b>"คัดลอกคำสั่ง"</b> ด้านบน เพื่อนำไปวางในแชท AI ที่ท่านใช้งาน (แนะนำ Claude 3.5 Sonnet, ChatGPT-4o หรือ Gemini Advanced)</li>
+                <li><b>แนบไฟล์บทความวิชาการ (PDF) ที่น่าเชื่อถือ จำนวน 3-10 บทความ</b> ส่งไปพร้อมกับคำสั่งนี้</li>
+                <li>เพื่อให้สอดคล้องกับแนวทางของ ว.ป๋วยฯ ควรเลือกบทความที่มีความหลากหลาย ทั้งมุมมองจากเบื้องบน (Top-down) และปฏิบัติการจากเบื้องล่าง (Bottom-up) เพื่อให้ AI เห็นความซับซ้อนของปัญหา</li>
+            </ol>
         </div>
     </div>
 
@@ -163,51 +190,52 @@
 <script>
     function generatePrompt() {
         const task = document.getElementById('task').value;
-        const topic = document.getElementById('topic').value || "[โปรดระบุหัวข้อของคุณ]";
+        const topic = document.getElementById('topic').value || "[โปรดระบุประเด็นการพัฒนาของท่าน]";
         const citation = document.getElementById('citation').value;
 
-        // แยก Prompt ตาม Task 
+        // แยก Prompt ตาม Task ให้สะท้อนกลิ่นอายการพัฒนาสังคม
         let frameworkInstruction = "";
         
         if(task.includes("Evaluate & Identify")) {
-            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาเพื่อสกัดข้อมูล 3 ส่วนหลัก ได้แก่:
-1. ทฤษฎีและแนวคิดที่เกี่ยวข้อง (Relevant Theories)
-2. ระเบียบวิธีวิจัยที่ใช้ (Methods)
-3. ช่องว่างการวิจัย (Research Gaps) ที่งานเหล่านี้ยังไม่ได้ศึกษา หรือข้อโต้แย้งที่ยังหาข้อสรุปไม่ได้`;
+            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาแบบองค์รวม (Holistic View) เพื่อสกัดข้อมูล 3 ส่วนหลัก ได้แก่:
+1. กระบวนทัศน์และทฤษฎีการพัฒนาที่ซ่อนอยู่ (Underlying Development Paradigms/Theories)
+2. บริบททางสังคม เศรษฐกิจ หรือการเมืองที่ส่งผลต่อปรากฏการณ์นี้ (Socio-economic & Political Contexts)
+3. ช่องว่างการวิจัย (Research Gaps) โดยเฉพาะในมิติของความเหลื่อมล้ำ สิทธิมนุษยชน หรือประเด็นที่ยังขาดการมองจากมุมมองของคนชายขอบ/ผู้ปฏิบัติการ (Bottom-up perspective)`;
         } 
         else if(task.includes("Thematic Outline")) {
             frameworkInstruction = `โปรดจัดกลุ่มเนื้อหาจากเอกสารที่แนบมาโดย:
-- แบ่งตามประเด็นหลัก ทฤษฎีที่ใช้ (Theories) หรือระเบียบวิธีวิจัย (Methods)
-- นำผลลัพธ์ของแต่ละเอกสารมาจัดวางเพื่อเปรียบเทียบจุดแข็งและจุดอ่อน 
-- ไม่เขียนสรุปแยกทีละเอกสาร แต่ให้สังเคราะห์เนื้อหาที่เกี่ยวข้องกันเข้าด้วยกัน`;
+- แบ่งตามประเด็นปัญหา (Themes), ทฤษฎีการพัฒนาที่ใช้ (Theories), หรือเครื่องมือในการปฏิบัติการ (Development Practices)
+- นำผลลัพธ์ของแต่ละเอกสารมาจัดวางเพื่อเปรียบเทียบจุดแข็งและข้อจำกัดในการแก้ปัญหา
+- วิเคราะห์ความขัดแย้ง (Conflicts) หรือความร่วมมือ (Collaborations) ระหว่างภาครัฐ ภาคเอกชน และภาคประชาสังคมที่ปรากฏในวรรณกรรม`;
         }
-        else if(task.includes("Chronological Outline")) {
-            frameworkInstruction = `โปรดจัดเรียงเนื้อหาจากเอกสารที่แนบมาโดย:
-- วิเคราะห์พัฒนาการของหัวข้อนี้ตาม "ลำดับเวลา (Timeline)"
-- ชี้ให้เห็นว่าแนวคิด ทฤษฎี (Theories) หรือ ระเบียบวิธี (Methods) มีการเปลี่ยนแปลงหรือพัฒนาขึ้นอย่างไรเมื่อเวลาผ่านไป`;
+        else if(task.includes("Critical Synthesis")) {
+            frameworkInstruction = `โปรดสังเคราะห์วรรณกรรมจากเอกสารที่แนบมาในเชิงวิพากษ์ (Critical Synthesis) โดย:
+- รวบรวมองค์ความรู้เพื่อชี้ให้เห็นถึง "ความซับซ้อนและพลวัต (Dynamics)" ของปัญหาการพัฒนา
+- แทรกการตีความเชิงวิพากษ์ว่า แนวทางการพัฒนาในวรรณกรรมเหล่านี้นำไปสู่ความยั่งยืน ความเป็นธรรมทางสังคม หรือการเสริมพลัง (Empowerment) แก่ชุมชนอย่างแท้จริงหรือไม่
+- เชื่อมโยงย่อหน้าด้วยภาษาเชิงวิชาการที่สละสลวย ชี้ให้เห็นข้อถกเถียง (Debates) ที่สำคัญ`;
         }
-        else if(task.includes("Synthesize & Write")) {
-            frameworkInstruction = `โปรดร่างทบทวนวรรณกรรมจากเอกสารที่แนบมาโดย:
-- สังเคราะห์ (Synthesize) องค์ความรู้ ทฤษฎี และระเบียบวิธีวิจัยให้ร้อยเรียงเป็นเนื้อเดียวกัน
-- ชี้ให้เห็นถึง "ช่องว่างการวิจัย (Research Gaps)" ในช่วงท้ายเพื่อปูทางไปสู่งานวิจัยใหม่
-- ใช้ Topic Sentences และ Transition Words เพื่อเชื่อมโยงแต่ละย่อหน้าให้ลื่นไหล`;
+        else if(task.includes("Methodology Review")) {
+            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาโดยเจาะลึกเฉพาะ "วิธีวิทยาการวิจัย (Research Methodology)" โดย:
+- สกัดและเปรียบเทียบระเบียบวิธีวิจัยที่แต่ละบทความใช้ (ทั้งเชิงปริมาณ เชิงคุณภาพ หรือแบบผสมผสาน)
+- อธิบายกระบวนการได้มาซึ่งข้อมูล (Data Collection) และการวิเคราะห์ (Data Analysis)
+- วิจารณ์ข้อจำกัดเชิงวิธีวิทยา (Methodological Limitations) ของงานเหล่านี้ ว่าอาจส่งผลต่ออคติหรือการมองข้ามเสียงของพื้นที่/ชุมชนไปหรือไม่`;
         }
 
-        const promptText = `[Role]: จงสวมบทบาทเป็นผู้ช่วยวิจัยระดับสูง (Senior Research Assistant)
-[Topic]: สำหรับหัวข้องานวิจัยเรื่อง "${topic}"
+        const promptText = `[Role]: จงสวมบทบาทเป็น "นักวิชาการด้านการพัฒนาสังคมและปฏิบัติการพัฒนา" (Scholar in Development Studies and Practice) ที่มีโลกทัศน์แบบองค์รวมและยึดมั่นในความเป็นธรรมทางสังคม
+[Topic]: สำหรับประเด็นการศึกษาเรื่อง "${topic}"
 [Task]: หน้าที่ของคุณคือ ${task.split('(')[0].trim()}
 
 [Core Objectives]:
 ${frameworkInstruction}
 
-[Strict Rules - กฎเหล็กวิชาการ]:
-1. ห้ามสร้างข้อมูล ผู้แต่ง ปีที่พิมพ์ หรือแหล่งอ้างอิงปลอมขึ้นมาเองโดยเด็ดขาด (Strict No Hallucination)
-2. หากฉันมีการแนบไฟล์เอกสาร ให้วิเคราะห์และตอบคำถามโดยอิงจาก "ข้อมูลในไฟล์ที่แนบมาให้เท่านั้น"
-3. หากข้อมูลใดไม่มีระบุในเอกสาร ให้ตอบอย่างตรงไปตรงมาว่า "ไม่พบข้อมูล"
-4. ใช้ภาษาทางการแบบวิชาการ (Formal Academic Tone) ปราศจากอคติ
-5. รูปแบบการอ้างอิง (หากมี): ${citation}
+[Strict Rules - กฎเหล็กวิชาการระดับบัณฑิตศึกษา]:
+1. ห้ามมั่วข้อมูล (Strict No Hallucination): ห้ามสร้างข้อมูลอ้างอิง ผู้แต่ง ปีที่พิมพ์ หรือข้อค้นพบขึ้นมาเองโดยเด็ดขาด 
+2. อิงข้อมูลจริง (Evidence-based): ให้วิเคราะห์ สังเคราะห์ และตอบคำถามโดยดึงข้อมูลจาก "เอกสาร PDF ที่ฉันจะแนบไปให้เท่านั้น" 
+3. ความซื่อสัตย์ (Integrity): หากประเด็นที่ฉันถาม ไม่มีระบุในเอกสารที่แนบไป ให้ตอบอย่างตรงไปตรงมาว่า "ไม่พบข้อมูลในเอกสาร"
+4. ระดับภาษา (Tone): ใช้ภาษาทางการแบบวิชาการสังคมศาสตร์ (Formal Academic Tone for Social Sciences) ลึกซึ้ง ปราศจากอคติ และเคารพความหลากหลาย
+5. รูปแบบการอ้างอิง: ${citation} (โปรดระบุแหล่งอ้างอิงในเนื้อหาทุกครั้งที่หยิบยกข้อค้นพบมากล่าวถึง)
 
-[Instruction]: โปรดรอให้ฉันแนบไฟล์เอกสาร หรือใส่ข้อมูลดิบให้คุณก่อน แล้วเราจะเริ่มทำงานนี้ด้วยกัน คุณเข้าใจคำสั่งนี้หรือไม่?`;
+[Instruction]: โปรดรับทราบคำสั่งนี้ และรอรับไฟล์เอกสารงานวิจัย (PDF) ที่ฉันกำลังจะแนบไปให้ เพื่อเริ่มการวิเคราะห์ตามกรอบคิดข้างต้นได้เลย`;
 
         document.getElementById('promptOutput').innerText = promptText;
         document.getElementById('resultArea').style.display = 'block';
@@ -216,7 +244,7 @@ ${frameworkInstruction}
     function copyToClipboard() {
         const textToCopy = document.getElementById('promptOutput').innerText;
         navigator.clipboard.writeText(textToCopy).then(() => {
-            alert("คัดลอก Prompt สำเร็จ! นำไปวางใน AI ที่คุณใช้งานได้เลยครับ");
+            alert("คัดลอกคำสั่งสำเร็จ! นำไปวางใน AI พร้อมกับแนบไฟล์ PDF 3-10 บทความได้เลยครับ");
         }).catch(err => {
             alert("ไม่สามารถคัดลอกได้ กรุณาคลุมดำและคัดลอกด้วยตัวเองครับ");
         });
