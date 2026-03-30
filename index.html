@@ -3,180 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic PDF Analyzer AI</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <title>Academic Prompt Creator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
+            --primary: #0f172a;
+            --secondary: #3b82f6;
             --bg: #f8fafc;
-            --border: #e2e8f0;
-            --text: #1e293b;
+            --border: #cbd5e1;
+            --text: #334155;
+            --tu-red: #c11b17;
+            --tu-yellow: #f1c40f;
+            --scribbr-orange: #f26b38;
         }
         body {
-            font-family: 'Sarabun', -apple-system, sans-serif;
+            font-family: 'Sarabun', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.6;
             margin: 0;
             padding: 20px;
+            line-height: 1.6;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-        h1 { text-align: center; color: var(--primary); }
-        .section {
-            margin-bottom: 25px;
-            padding: 20px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--tu-red) 50%, var(--tu-yellow) 50%);
+            border-top-left-radius: 16px; border-top-right-radius: 16px;
         }
-        label { font-weight: bold; display: block; margin-bottom: 8px; }
-        input[type="text"], input[type="password"], select {
-            width: 100%; padding: 10px; margin-bottom: 10px;
-            border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box;
+        
+        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; margin-top: 10px; }
+        p.subtitle { text-align: center; color: #64748b; margin-bottom: 20px; }
+        
+        /* กล่องนิยามความรู้ */
+        .definition-box {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            font-size: 14.5px;
+            color: #475569;
         }
-        input[type="file"] { margin-bottom: 10px; }
+        .definition-box strong { color: var(--primary); }
+        .definition-box .eng-quote { font-style: italic; color: #64748b; margin-top: 5px; display: block; }
+
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--primary); }
+        input[type="text"], select {
+            width: 100%; padding: 12px;
+            border: 1px solid var(--border); border-radius: 8px;
+            font-family: 'Sarabun', sans-serif; font-size: 15px;
+            box-sizing: border-box; transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none; border-color: var(--secondary);
+        }
+        
         button {
-            background-color: var(--primary); color: white;
-            border: none; padding: 12px 20px; border-radius: 6px;
-            cursor: pointer; font-size: 16px; width: 100%; transition: 0.3s;
+            background-color: var(--secondary); color: white;
+            border: none; padding: 14px 20px; border-radius: 8px;
+            cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Sarabun', sans-serif;
+            width: 100%; transition: 0.3s; margin-top: 10px;
         }
-        button:hover { background-color: #1d4ed8; }
-        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
-        #outputArea {
-            white-space: pre-wrap; background: #f1f5f9; padding: 20px;
-            border-radius: 8px; font-size: 14px; margin-top: 15px; display: none;
+        button:hover { background-color: #2563eb; }
+        
+        .result-box {
+            margin-top: 30px; border: 2px dashed var(--secondary);
+            border-radius: 12px; padding: 20px; background-color: #eff6ff;
+            display: none;
         }
-        .status { color: #059669; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+        .result-box h3 { margin-top: 0; color: var(--secondary); }
+        #promptOutput {
+            white-space: pre-wrap; background: white; padding: 15px;
+            border-radius: 8px; border: 1px solid #bfdbfe; font-size: 15px;
+            color: #1e293b; margin-bottom: 15px;
+        }
+        
+        .guide-box {
+            margin-top: 20px; padding: 15px; background-color: #fffbeb;
+            border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 14px;
+        }
+        .guide-box strong { color: #b45309; }
+
+        .footer-credit {
+            margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
+            text-align: center; font-size: 13px; color: #64748b;
+        }
+        .footer-credit span { font-weight: 600; color: var(--tu-red); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📚 Academic PDF Analyzer</h1>
-    <p style="text-align: center;">วิเคราะห์บทความวิชาการจากไฟล์ PDF ด้วย AI (ข้อมูลไม่รั่วไหล)</p>
-
-    <div class="section">
-        <label>⚙️ 1. ใส่ Gemini API Key ของคุณ</label>
-        <input type="password" id="apiKey" placeholder="AIzaSy... (API Key จะถูกเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น)">
-        <p style="font-size: 12px; color: #64748b;">รับ Key ฟรีได้ที่ Google AI Studio</p>
-    </div>
-
-    <div class="section">
-        <label>📄 2. อัปโหลดไฟล์ PDF งานวิจัย (แนะนำ 1-5 ไฟล์เพื่อความรวดเร็ว)</label>
-        <input type="file" id="pdfFiles" multiple accept="application/pdf">
-        
-        <label style="margin-top: 15px;">🎯 3. เลือกรูปแบบการวิเคราะห์</label>
-        <select id="taskType">
-            <option value="synthesis">สร้างตารางเปรียบเทียบวรรณกรรม (Synthesis Matrix)</option>
-            <option value="gap">หาช่องว่างการวิจัย (Identify Research Gaps)</option>
-            <option value="methodology">สรุประเบียบวิธีวิจัยและข้อจำกัด (Methodology & Limitations)</option>
-        </select>
-
-        <label style="margin-top: 15px;">🔍 4. คีย์เวิร์ดที่ต้องการเน้นเป็นพิเศษ (ไม่บังคับ)</label>
-        <input type="text" id="keywords" placeholder="เช่น นโยบาย ESG, AI in Education, ผู้สูงอายุ">
-    </div>
-
-    <button id="analyzeBtn" onclick="processPDFs()">🚀 เริ่มวิเคราะห์เอกสาร</button>
-    <div id="statusText" class="status"></div>
+    <h1>🎓 Academic Prompt Creator</h1>
+    <p class="subtitle">เครื่องมือสร้างคำสั่ง AI สำหรับทบทวนวรรณกรรมและงานวิจัย</p>
     
-    <div id="outputArea"></div>
+    <div class="definition-box">
+        <strong>💡 Literature Review คืออะไร?</strong><br>
+        การทบทวนวรรณกรรมคือการสำรวจแหล่งข้อมูลทางวิชาการ เพื่อให้เห็นภาพรวมขององค์ความรู้ปัจจุบัน และนำไปสู่การค้นพบทฤษฎี ระเบียบวิธี และช่องว่างการวิจัย
+        <span class="eng-quote">"It provides an overview of current knowledge, allowing you to identify relevant theories, methods, and gaps in the existing research." — Scribbr</span>
+    </div>
+
+    <div class="form-group">
+        <label>1. เป้าหมายของงาน (Task)</label>
+        <select id="task">
+            <option value="Evaluate & Identify (วิเคราะห์และหาช่องว่างงานวิจัย)">1. วิเคราะห์ความเชื่อมโยงและหาช่องว่าง (Evaluate & Identify Gaps)</option>
+            <option value="Thematic Outline (จัดกลุ่มตามประเด็น ทฤษฎี และระเบียบวิธี)">2. จัดกลุ่มตามประเด็น ทฤษฎี และระเบียบวิธี (Thematic Outline)</option>
+            <option value="Chronological Outline (จัดกลุ่มตามพัฒนาการตามลำดับเวลา)">3. จัดโครงสร้างตามลำดับเวลา (Chronological Outline)</option>
+            <option value="Synthesize & Write (สังเคราะห์และร่างบทความ)">4. สังเคราะห์และร่างบทความ (Synthesize & Write)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>2. หัวข้องานวิจัย / ประเด็นที่สนใจ (Topic)</label>
+        <input type="text" id="topic" placeholder="เช่น นโยบายความยั่งยืน, การพัฒนาชุมชน, ESG">
+    </div>
+
+    <div class="form-group">
+        <label>3. รูปแบบการอ้างอิง (Citation Style)</label>
+        <select id="citation">
+            <option value="APA 7th Edition">APA 7th Edition</option>
+            <option value="IEEE">IEEE</option>
+            <option value="Vancouver">Vancouver</option>
+            <option value="Harvard">Harvard</option>
+        </select>
+    </div>
+
+    <button onclick="generatePrompt()">✨ สร้าง Prompt ทันที</button>
+
+    <div id="resultArea" class="result-box">
+        <h3>📋 Prompt ของคุณพร้อมแล้ว!</h3>
+        <div id="promptOutput"></div>
+        <button onclick="copyToClipboard()" style="background-color: #10b981;">📋 คัดลอก Prompt</button>
+        
+        <div class="guide-box">
+            <strong>💡 คำแนะนำวิธีใช้งาน:</strong>
+            <ul style="margin-top: 5px; padding-left: 20px; margin-bottom: 0;">
+                <li><strong>สำหรับ Claude / ChatGPT:</strong> กดคัดลอก Prompt ด้านบนไปวาง แล้วกด <b>"แนบไฟล์ PDF"</b> งานวิจัยของคุณ ส่งไปพร้อมกันได้เลย</li>
+                <li><strong>สำหรับ Gemini:</strong> อัปโหลดไฟล์ PDF ไว้ใน Google Drive ของคุณ แล้วสั่งให้ Gemini เข้าไปอ่าน หรือก๊อปปี้เนื้อหาใน PDF มาแปะต่อท้าย Prompt นี้ได้เลย</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-credit">
+        พัฒนาโดย: นักศึกษา ป.โท <span>วิทยาลัยพัฒนศาสตร์ ป๋วย อึ๊งภากรณ์ มหาวิทยาลัยธรรมศาสตร์</span>
+    </div>
 </div>
 
 <script>
-    // ตั้งค่า Worker ของ PDF.js
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    function generatePrompt() {
+        const task = document.getElementById('task').value;
+        const topic = document.getElementById('topic').value || "[โปรดระบุหัวข้อของคุณ]";
+        const citation = document.getElementById('citation').value;
 
-    // ฟังก์ชันดึงข้อความจาก PDF ทีละไฟล์
-    async function extractTextFromPDF(file) {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let fullText = `\n\n--- เริ่มเอกสาร: ${file.name} ---\n`;
+        // แยก Prompt ตาม Task 
+        let frameworkInstruction = "";
         
-        // ดึงข้อความจากทุกหน้า (ดึงแค่ 10 หน้าแรกต่อไฟล์ เพื่อป้องกัน Token ล้น)
-        const maxPages = Math.min(pdf.numPages, 10); 
-        for (let i = 1; i <= maxPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + "\n";
+        if(task.includes("Evaluate & Identify")) {
+            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาเพื่อสกัดข้อมูล 3 ส่วนหลัก ได้แก่:
+1. ทฤษฎีและแนวคิดที่เกี่ยวข้อง (Relevant Theories)
+2. ระเบียบวิธีวิจัยที่ใช้ (Methods)
+3. ช่องว่างการวิจัย (Research Gaps) ที่งานเหล่านี้ยังไม่ได้ศึกษา หรือข้อโต้แย้งที่ยังหาข้อสรุปไม่ได้`;
+        } 
+        else if(task.includes("Thematic Outline")) {
+            frameworkInstruction = `โปรดจัดกลุ่มเนื้อหาจากเอกสารที่แนบมาโดย:
+- แบ่งตามประเด็นหลัก ทฤษฎีที่ใช้ (Theories) หรือระเบียบวิธีวิจัย (Methods)
+- นำผลลัพธ์ของแต่ละเอกสารมาจัดวางเพื่อเปรียบเทียบจุดแข็งและจุดอ่อน 
+- ไม่เขียนสรุปแยกทีละเอกสาร แต่ให้สังเคราะห์เนื้อหาที่เกี่ยวข้องกันเข้าด้วยกัน`;
         }
-        return fullText;
+        else if(task.includes("Chronological Outline")) {
+            frameworkInstruction = `โปรดจัดเรียงเนื้อหาจากเอกสารที่แนบมาโดย:
+- วิเคราะห์พัฒนาการของหัวข้อนี้ตาม "ลำดับเวลา (Timeline)"
+- ชี้ให้เห็นว่าแนวคิด ทฤษฎี (Theories) หรือ ระเบียบวิธี (Methods) มีการเปลี่ยนแปลงหรือพัฒนาขึ้นอย่างไรเมื่อเวลาผ่านไป`;
+        }
+        else if(task.includes("Synthesize & Write")) {
+            frameworkInstruction = `โปรดร่างทบทวนวรรณกรรมจากเอกสารที่แนบมาโดย:
+- สังเคราะห์ (Synthesize) องค์ความรู้ ทฤษฎี และระเบียบวิธีวิจัยให้ร้อยเรียงเป็นเนื้อเดียวกัน
+- ชี้ให้เห็นถึง "ช่องว่างการวิจัย (Research Gaps)" ในช่วงท้ายเพื่อปูทางไปสู่งานวิจัยใหม่
+- ใช้ Topic Sentences และ Transition Words เพื่อเชื่อมโยงแต่ละย่อหน้าให้ลื่นไหล`;
+        }
+
+        const promptText = `[Role]: จงสวมบทบาทเป็นผู้ช่วยวิจัยระดับสูง (Senior Research Assistant)
+[Topic]: สำหรับหัวข้องานวิจัยเรื่อง "${topic}"
+[Task]: หน้าที่ของคุณคือ ${task.split('(')[0].trim()}
+
+[Core Objectives]:
+${frameworkInstruction}
+
+[Strict Rules - กฎเหล็กวิชาการ]:
+1. ห้ามสร้างข้อมูล ผู้แต่ง ปีที่พิมพ์ หรือแหล่งอ้างอิงปลอมขึ้นมาเองโดยเด็ดขาด (Strict No Hallucination)
+2. หากฉันมีการแนบไฟล์เอกสาร ให้วิเคราะห์และตอบคำถามโดยอิงจาก "ข้อมูลในไฟล์ที่แนบมาให้เท่านั้น"
+3. หากข้อมูลใดไม่มีระบุในเอกสาร ให้ตอบอย่างตรงไปตรงมาว่า "ไม่พบข้อมูล"
+4. ใช้ภาษาทางการแบบวิชาการ (Formal Academic Tone) ปราศจากอคติ
+5. รูปแบบการอ้างอิง (หากมี): ${citation}
+
+[Instruction]: โปรดรอให้ฉันแนบไฟล์เอกสาร หรือใส่ข้อมูลดิบให้คุณก่อน แล้วเราจะเริ่มทำงานนี้ด้วยกัน คุณเข้าใจคำสั่งนี้หรือไม่?`;
+
+        document.getElementById('promptOutput').innerText = promptText;
+        document.getElementById('resultArea').style.display = 'block';
     }
 
-    // ฟังก์ชันหลักเมื่อกดปุ่ม "เริ่มวิเคราะห์"
-    async function processPDFs() {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        const files = document.getElementById('pdfFiles').files;
-        const taskType = document.getElementById('taskType').value;
-        const keywords = document.getElementById('keywords').value.trim();
-        const statusText = document.getElementById('statusText');
-        const outputArea = document.getElementById('outputArea');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-
-        if (!apiKey) { alert("กรุณาใส่ API Key ก่อนครับ"); return; }
-        if (files.length === 0) { alert("กรุณาอัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์ครับ"); return; }
-
-        try {
-            analyzeBtn.disabled = true;
-            outputArea.style.display = 'none';
-            statusText.innerText = "กำลังสกัดข้อความจาก PDF... (อาจใช้เวลาสักครู่)";
-
-            // 1. อ่านไฟล์ PDF ทั้งหมด
-            let combinedText = "";
-            for (let i = 0; i < files.length; i++) {
-                statusText.innerText = `กำลังสกัดข้อความไฟล์ที่ ${i+1}/${files.length}...`;
-                combinedText += await extractTextFromPDF(files[i]);
-            }
-
-            // 2. สร้าง Prompt ทรงพลัง (Grounding Prompt)
-            statusText.innerText = "กำลังวิเคราะห์ข้อมูลด้วย AI...";
-            const prompt = `
-[Role]: คุณคือผู้ช่วยวิจัยระดับสูง 
-[Task]: หน้าที่ของคุณคือ ${document.getElementById('taskType').options[document.getElementById('taskType').selectedIndex].text}
-[Focus]: โปรดเน้นประเด็นที่เกี่ยวกับ "${keywords ? keywords : 'เนื้อหาหลักของเอกสาร'}"
-
-[Strict Rules - กฎเหล็ก]:
-1. ห้ามใช้ข้อมูลภายนอกเด็ดขาด ให้อ้างอิงเฉพาะข้อมูลที่อยู่ในเอกสารที่แนบมานี้เท่านั้น
-2. หากข้อมูลใดไม่มีในเอกสาร ให้ตอบว่า "ไม่พบข้อมูล"
-3. ต้องมีการอ้างอิงชื่อไฟล์ (เช่น [ชื่อไฟล์.pdf]) ทุกครั้งที่นำข้อมูลมาสรุป
-4. ใช้ภาษาทางการแบบวิชาการ (Academic Tone)
-
-[Raw Data เอกสารแนบ]:
-${combinedText}
-            `;
-
-            // 3. ส่งข้อมูลไปที่ Gemini API (ใช้รุ่น 1.5 Flash ที่อ่าน Context ได้ยาวและเร็ว)
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            });
-
-            const result = await response.json();
-            
-            // 4. แสดงผลลัพธ์
-            if (result.candidates && result.candidates[0].content.parts[0].text) {
-                statusText.innerText = "✅ วิเคราะห์เสร็จสิ้น!";
-                outputArea.style.display = 'block';
-                outputArea.innerText = result.candidates[0].content.parts[0].text;
-            } else {
-                throw new Error("AI ไม่ส่งคำตอบกลับมา (อาจจะ Context ยาวเกินไป หรือ API Key ผิด)");
-            }
-
-        } catch (error) {
-            console.error(error);
-            statusText.innerText = "❌ เกิดข้อผิดพลาด: " + error.message;
-        } finally {
-            analyzeBtn.disabled = false;
-        }
+    function copyToClipboard() {
+        const textToCopy = document.getElementById('promptOutput').innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert("คัดลอก Prompt สำเร็จ! นำไปวางใน AI ที่คุณใช้งานได้เลยครับ");
+        }).catch(err => {
+            alert("ไม่สามารถคัดลอกได้ กรุณาคลุมดำและคัดลอกด้วยตัวเองครับ");
+        });
     }
 </script>
 
