@@ -7,27 +7,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            var(--text-dark): #111827; var(--text-main): #374151; var(--border): #d1d5db; var(--bg): #f9fafb;
-            var(--tu-red): #c11b17; var(--tu-yellow): #f1c40f; var(--tu-yellow-light): #fffde7;
+            --text-dark: #111827; --text-main: #374151; --border: #d1d5db; --bg: #f9fafb;
+            --tu-red: #c11b17; --tu-yellow: #f1c40f; --tu-yellow-light: #fffde7;
         }
-        body { font-family: 'Sarabun', sans-serif; background-color: #f9fafb; color: #374151; margin: 0; padding: 20px; line-height: 1.6; }
+        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.6; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); position: relative; }
-        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #c11b17 50%, #f1c40f 50%); border-top-left-radius: 16px; border-top-right-radius: 16px; }
-        h1 { text-align: center; color: #c11b17; margin-bottom: 5px; margin-top: 10px; font-weight: 600; font-size: 26px;}
+        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--tu-red) 50%, var(--tu-yellow) 50%); border-top-left-radius: 16px; border-top-right-radius: 16px; }
+        h1 { text-align: center; color: var(--tu-red); margin-bottom: 5px; margin-top: 10px; font-weight: 600; font-size: 26px;}
         p.subtitle { text-align: center; color: #64748b; margin-bottom: 30px; font-weight: 300; font-size: 16px;}
         .form-group { margin-bottom: 24px; }
-        label { font-weight: 600; display: block; margin-bottom: 8px; color: #111827; }
-        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s; color: #111827; background-color: #ffffff; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-dark); }
+        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s; color: var(--text-dark); background-color: #ffffff; }
         textarea { resize: vertical; min-height: 80px; }
-        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: #c11b17; box-shadow: 0 0 0 3px rgba(193, 27, 23, 0.1); }
-        button { background-color: #c11b17; color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Sarabun', sans-serif; width: 100%; transition: 0.3s; margin-top: 10px; }
-        button:hover { background-color: #f1c40f; color: #c11b17; }
-        .result-box { margin-top: 30px; border: 2px dashed #c11b17; border-radius: 12px; padding: 20px; background-color: #fffde7; display: none; }
-        .result-box h3 { margin-top: 0; color: #c11b17; font-weight: 600; }
-        #promptOutput { white-space: pre-wrap; background: white; padding: 18px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 15px; color: #111827; margin-bottom: 15px; line-height: 1.7; }
-        .guide-box { margin-top: 20px; padding: 20px; background-color: white; border-left: 4px solid #f1c40f; border-radius: 8px; font-size: 14.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .footer-credit { margin-top: 40px; padding-top: 20px; border-top: 1px solid #d1d5db; text-align: center; font-size: 13px; }
-        .footer-credit span { font-weight: 600; color: #c11b17; }
+        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--tu-red); box-shadow: 0 0 0 3px rgba(193, 27, 23, 0.1); }
+        button { background-color: var(--tu-red); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Sarabun', sans-serif; width: 100%; transition: 0.3s; margin-top: 10px; }
+        button:hover { background-color: var(--tu-yellow); color: var(--tu-red); }
+        
+        .result-box { margin-top: 30px; border: 2px dashed var(--tu-red); border-radius: 12px; padding: 20px; background-color: var(--tu-yellow-light); display: none; }
+        .result-box h3 { margin-top: 0; color: var(--tu-red); font-weight: 600; }
+        #promptOutput { white-space: pre-wrap; background: white; padding: 18px; border-radius: 8px; border: 1px solid var(--border); font-size: 15px; color: var(--text-dark); margin-bottom: 15px; line-height: 1.7; }
+        .guide-box { margin-top: 20px; padding: 20px; background-color: white; border-left: 4px solid var(--tu-yellow); border-radius: 8px; font-size: 14.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        /* สไตล์สำหรับกล่องประวัติ */
+        .history-section { margin-top: 50px; border-top: 2px solid #e5e7eb; padding-top: 30px; display: none; }
+        .history-title { color: var(--tu-red); font-weight: 600; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .history-item { background: #f3f4f6; border-left: 4px solid #9ca3af; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; position: relative; }
+        .history-date { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+        .history-topic { font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
+        .history-rq { color: #4b5563; font-style: italic; margin-bottom: 10px; }
+        .btn-copy-sm { background-color: #10b981; color: white; padding: 6px 12px; font-size: 13px; border-radius: 4px; width: auto; margin-top: 5px; display: inline-block; }
+        .btn-copy-sm:hover { background-color: #059669; color: white; }
+        .btn-clear { background: none; border: none; color: #9ca3af; font-size: 13px; cursor: pointer; text-decoration: underline; padding: 0; width: auto; margin: 0;}
+        .btn-clear:hover { color: var(--tu-red); background: none; }
+
+        .footer-credit { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; }
+        .footer-credit span { font-weight: 600; color: var(--tu-red); }
         .optional-badge { font-size: 12px; font-weight: normal; color: #6b7280; background: #e5e7eb; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
     </style>
 </head>
@@ -57,25 +71,29 @@
         <textarea id="researchQuestion" placeholder="เช่น นโยบาย ESG ส่งผลกระทบต่อเศรษฐกิจฐานรากในชุมชนเมืองอย่างไร?"></textarea>
     </div>
 
-    <div class="form-group">
-        <label>4. ข้อมูลหรือคำตอบจากรอบที่แล้ว (Previous Context) <span class="optional-badge">ไม่บังคับ</span></label>
-        <textarea id="previousContext" placeholder="หากเป็นการสั่งงานต่อเนื่อง ให้นำคำตอบที่ AI เคยวิเคราะห์ไว้รอบที่แล้วมาวางที่นี่ เพื่อให้ AI ต่อยอดข้อมูลเดิม..."></textarea>
-    </div>
-
     <button onclick="generatePrompt()" id="generateBtn">✨ สร้างคำสั่งสำหรับวิเคราะห์วรรณกรรม</button>
 
     <div id="resultArea" class="result-box">
         <h3>📋 คำสั่ง (Prompt) ของท่านพร้อมแล้ว!</h3>
         <div id="promptOutput"></div>
-        <button onclick="copyToClipboard()" style="background-color: #c11b17; color: white;">📋 คัดลอกคำสั่งเพื่อนำไปใช้งาน</button>
+        <button onclick="copyToClipboard('promptOutput')" style="background-color: #c11b17; color: white;">📋 คัดลอกคำสั่งเพื่อนำไปใช้งาน</button>
         
         <div class="guide-box">
             <strong style="color: #c11b17; font-size: 16px;">💡 คำแนะนำสำหรับการวิเคราะห์:</strong>
-            <ol style="margin-top: 10px; padding-left: 20px;">
+            <ol style="margin-top: 10px; padding-left: 20px; margin-bottom: 0;">
                 <li>กดคัดลอกคำสั่ง แล้วนำไปวางในแชท AI (Claude, ChatGPT, Gemini)</li>
-                <li><b>แนบไฟล์บทความวิชาการ (PDF) จำนวน 3-10 บทความ</b> ส่งไปพร้อมกัน</li>
+                <li>เมื่อ AI ตอบกลับภาพรวมมาแล้ว <b>ให้ท่านแนบไฟล์บทความวิชาการ (PDF) จำนวน 3-10 บทความ</b> ส่งตามไปอีกครั้งเพื่อให้ AI วิเคราะห์เจาะลึก</li>
             </ol>
         </div>
+    </div>
+
+    <div id="historySection" class="history-section">
+        <div class="history-title">
+            <span>🕒 ประวัติการสร้างคำสั่ง (เครื่องนี้)</span>
+            <button class="btn-clear" onclick="clearHistory()">ล้างประวัติ</button>
+        </div>
+        <div id="historyList">
+            </div>
     </div>
 
     <div class="footer-credit">พัฒนาโดย: นักศึกษา ป.โท <span>วิทยาลัยพัฒนศาสตร์ ป๋วย อึ๊งภากรณ์ มหาวิทยาลัยธรรมศาสตร์</span></div>
@@ -83,7 +101,12 @@
 
 <script>
     // ⚠️ นำ URL ของ Google Apps Script มาใส่ตรงนี้ ⚠️
-    const GOOGLE_SHEET_API_URL = "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้"; 
+    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzCuJoJ8txqAjmm6qtFbisMdk2oDzd7Ys__g765UH8FMAmepa8kGoYVUx7tszNdSKxnpQ/exec"; 
+
+    // โหลดประวัติเมื่อเปิดหน้าเว็บ
+    window.onload = function() {
+        renderHistory();
+    };
 
     function generatePrompt() {
         const btn = document.getElementById('generateBtn');
@@ -93,7 +116,6 @@
         const taskValue = document.getElementById('task').value;
         const topic = document.getElementById('topic').value || "[โปรดระบุประเด็นการพัฒนาของท่าน]";
         const researchQuestion = document.getElementById('researchQuestion').value.trim();
-        const previousContext = document.getElementById('previousContext').value.trim();
 
         // แยก Prompt ตาม Task 
         let frameworkInstruction = "";
@@ -134,29 +156,92 @@
 
         promptText += `\n\n[Core Objectives]:\n${frameworkInstruction}`;
 
-        if (previousContext !== "") {
-            promptText += `\n\n[Previous Context / ข้อมูลบริบทเดิม]:\n"""\n${previousContext}\n"""\n(โปรดนำข้อมูลบริบทเดิมด้านบนนี้มาสานต่อ หรือใช้เป็นฐานในการวิเคราะห์เอกสารใหม่ที่ฉันกำลังจะแนบไป)`;
-        }
-
         promptText += `\n\n[Strict Rules - กฎเหล็กวิชาการระดับบัณฑิตศึกษา]:
-1. ห้ามมั่วข้อมูล (Strict No Hallucination): ห้ามสร้างข้อมูลอ้างอิง ผู้แต่ง ปีที่พิมพ์ หรือข้อค้นพบขึ้นมาเองโดยเด็ดขาด 
+1. ห้ามมั่วข้อมูล (Strict No Hallucination): เมื่อฉันแนบเอกสาร PDF ให้ในภายหลัง ห้ามสร้างข้อมูลอ้างอิง ผู้แต่ง ปีที่พิมพ์ หรือข้อค้นพบขึ้นมาเองโดยเด็ดขาด 
 2. อิงข้อมูลจริง (Evidence-based): ให้วิเคราะห์ สังเคราะห์ และตอบคำถามโดยดึงข้อมูลจาก "เอกสาร PDF ที่ฉันจะแนบไปให้เท่านั้น" 
 3. ความซื่อสัตย์ (Integrity): หากประเด็นที่ฉันถาม ไม่มีระบุในเอกสารที่แนบไป ให้ตอบอย่างตรงไปตรงมาว่า "ไม่พบข้อมูลในเอกสาร"
 4. ระดับภาษา (Tone): ใช้ภาษาทางการแบบวิชาการสังคมศาสตร์ ลึกซึ้ง ปราศจากอคติ และเคารพความหลากหลาย
 5. รูปแบบการอ้างอิง: บังคับใช้รูปแบบ "APA 7th Edition" เท่านั้น (โปรดระบุแหล่งอ้างอิงในเนื้อหาทุกครั้งที่หยิบยกข้อค้นพบมากล่าวถึง)
 
-[Instruction]: โปรดรับทราบคำสั่งนี้ และรอรับไฟล์เอกสารงานวิจัย (PDF) ที่ฉันกำลังจะแนบไปให้ เพื่อเริ่มการวิเคราะห์ตามกรอบคิดข้างต้นได้เลย`;
+[Instruction]: สำหรับการตอบกลับในรอบแรกนี้ โปรดสรุป "ภาพรวมของประเด็นนี้" จากฐานข้อมูลของคุณมาให้ฉันอ่านก่อนอย่างสังเขป (ประมาณ 2-3 ย่อหน้า) เพื่อปูพื้นฐานความเข้าใจ จากนั้นให้ปิดท้ายประโยคว่า "โปรดแนบไฟล์เอกสารงานวิจัย (PDF) ของคุณ เพื่อเริ่มการวิเคราะห์เชิงลึกตามกรอบคิดข้างต้นได้เลยครับ"`;
 
         document.getElementById('promptOutput').innerText = promptText;
         document.getElementById('resultArea').style.display = 'block';
         btn.innerText = "✨ สร้างคำสั่งสำหรับวิเคราะห์วรรณกรรม";
 
-        // ส่งข้อมูลไปบันทึกที่ Google Sheets
-        saveToGoogleSheet(taskName, topic, researchQuestion, previousContext, promptText);
+        // บันทึกข้อมูล
+        saveToLocalHistory(taskName, topic, researchQuestion, promptText);
+        saveToGoogleSheet(taskName, topic, researchQuestion, "", promptText); // ส่งไปหลังบ้าน
     }
 
+    // ฟังก์ชันจัดการประวัติ (Local Storage)
+    function saveToLocalHistory(task, topic, rq, prompt) {
+        let history = JSON.parse(localStorage.getItem('promptHistory')) || [];
+        
+        // เพิ่มข้อมูลใหม่ไปหน้าสุด
+        history.unshift({
+            date: new Date().toLocaleString('th-TH'),
+            task: task.split('(')[0].trim(),
+            topic: topic,
+            rq: rq,
+            prompt: prompt
+        });
+
+        // เก็บประวัติสูงสุด 10 รายการเพื่อไม่ให้รกเกินไป
+        if(history.length > 10) history.pop(); 
+
+        localStorage.setItem('promptHistory', JSON.stringify(history));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const historyList = document.getElementById('historyList');
+        const historySection = document.getElementById('historySection');
+        let history = JSON.parse(localStorage.getItem('promptHistory')) || [];
+
+        if (history.length === 0) {
+            historySection.style.display = 'none';
+            return;
+        }
+
+        historySection.style.display = 'block';
+        historyList.innerHTML = '';
+
+        history.forEach((item, index) => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            historyItem.innerHTML = `
+                <div class="history-date">${item.date}</div>
+                <div class="history-topic">หัวข้อ: ${item.topic}</div>
+                <div style="font-size: 13px; color: #4b5563; margin-bottom: 5px;">งาน: ${item.task}</div>
+                ${item.rq ? `<div class="history-rq">คำถามวิจัย: "${item.rq}"</div>` : ''}
+                <div id="hist-prompt-${index}" style="display:none;">${item.prompt}</div>
+                <button class="btn-copy-sm" onclick="copyToClipboard('hist-prompt-${index}')">📋 คัดลอกคำสั่งนี้อีกครั้ง</button>
+            `;
+            historyList.appendChild(historyItem);
+        });
+    }
+
+    function clearHistory() {
+        if(confirm('คุณต้องการลบประวัติการสร้างคำสั่งในเครื่องนี้ทั้งหมดใช่หรือไม่?')) {
+            localStorage.removeItem('promptHistory');
+            renderHistory();
+        }
+    }
+
+    function copyToClipboard(elementId) {
+        const textToCopy = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert("คัดลอกคำสั่งสำเร็จ! นำไปวางใน AI ได้เลย (แล้วค่อยแนบ PDF ตามไปในรอบถัดไปนะครับ)");
+        }).catch(err => {
+            alert("ไม่สามารถคัดลอกได้ กรุณาคลุมดำและคัดลอกด้วยตัวเองครับ");
+        });
+    }
+
+    // ฟังก์ชันส่งข้อมูลไป Google Sheets (ระบบหลังบ้าน)
     function saveToGoogleSheet(task, topic, rq, context, prompt) {
-        if(GOOGLE_SHEET_API_URL === "https://script.google.com/macros/s/AKfycbzCuJoJ8txqAjmm6qtFbisMdk2oDzd7Ys__g765UH8FMAmepa8kGoYVUx7tszNdSKxnpQ/exec") return; 
+        if(GOOGLE_SHEET_API_URL === "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้") return; 
         
         fetch(GOOGLE_SHEET_API_URL, {
             method: 'POST',
@@ -171,15 +256,6 @@
                 timestamp: new Date().toLocaleString('th-TH')
             })
         }).catch(err => console.error("Error saving to sheet:", err));
-    }
-
-    function copyToClipboard() {
-        const textToCopy = document.getElementById('promptOutput').innerText;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert("คัดลอกคำสั่งสำเร็จ! นำไปวางใน AI พร้อมกับแนบไฟล์ PDF ได้เลยครับ");
-        }).catch(err => {
-            alert("ไม่สามารถคัดลอกได้ กรุณาคลุมดำและคัดลอกด้วยตัวเองครับ");
-        });
     }
 </script>
 
