@@ -27,9 +27,10 @@
         .sidebar-menu button.active { background-color: var(--tu-red); color: white; font-weight: 600; }
         .sidebar-divider { height: 1px; background: #374151; margin: 15px 10px; }
         
-        /* Sidebar Footer (Credit) */
+        /* Sidebar Footer (Credit & Version) */
         .sidebar-footer { padding: 20px 15px; font-size: 11px; color: #9ca3af; text-align: center; border-top: 1px solid #374151; line-height: 1.5; background-color: var(--sidebar-bg); }
         .sidebar-footer .highlight { color: var(--tu-yellow); font-weight: 600; }
+        .version-badge { background-color: var(--tu-red); color: white; padding: 2px 6px; border-radius: 12px; font-size: 10px; margin-left: 5px; font-weight: 600; }
         
         /* Main Content Styles */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
@@ -96,10 +97,13 @@
         </ul>
         
         <div class="sidebar-footer">
-            <div style="margin-bottom: 8px; color: #d1d5db;">🧪 <b>Project ทดลอง</b></div>
+            <div style="margin-bottom: 8px; color: #d1d5db;">
+                🧪 <b>Project ทดลอง</b> <span class="version-badge">v.1.1</span>
+            </div>
             โดยนักศึกษา ป.โท <span class="highlight">วิทยาลัยพัฒนศาสตร์ ป๋วย อึ๊งภากรณ์</span><br>
             หลักสูตรศิลปศาสตรมหาบัณฑิต<br>สาขาวิชาการจัดการการพัฒนาและปฏิบัติการพัฒนา<br>
             ประจําปีการศึกษา 2568
+            <div style="margin-top: 10px; font-size: 10px; color: #6b7280;">อัปเดตล่าสุด: 31 มีนาคม 2569</div>
         </div>
     </nav>
 
@@ -211,7 +215,7 @@
     </main>
 
 <script>
-    // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ ⚠️
+    // ⚠️ URL เดิมถูกนำมาใส่ไว้ให้เรียบร้อยแล้วครับ ⚠️
     const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwa5J6fymqXchLrO943R89cQGjcw78PttRmFnmT-3Nsuuh72yitGRsgktFhk3g2MP6xGA/exec"; 
     let userIP = "Unknown IP";
 
