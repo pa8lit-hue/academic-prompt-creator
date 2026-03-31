@@ -89,18 +89,18 @@
             <h2>🎓 <span>AI</span> Navigator</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><button class="tab-btn active" onclick="switchTab('tab-about', this)">ℹ️ เกี่ยวกับเครื่องมือนี้ (About)</button></li>
-            <li><button class="tab-btn" onclick="switchTab('tab-feasibility', this)">💡 1. ประเมินหัวข้อ (รอด/ไม่รอด)</button></li>
+            <li><button class="tab-btn active" onclick="switchTab('tab-feasibility', this)">💡 1. ประเมินหัวข้อ (รอด/ไม่รอด)</button></li>
             <li><button class="tab-btn" onclick="switchTab('tab-litreview', this)">📚 2. ทบทวนวรรณกรรม</button></li>
             <li><button class="tab-btn" onclick="switchTab('tab-skeleton', this)">✍️ 3. วางโครงร่าง & เขียน</button></li>
             <li><button class="tab-btn" onclick="switchTab('tab-dna', this)">🎯 4. ถอดรหัส DNA & สอบจบ</button></li>
             <div class="sidebar-divider"></div>
             <li><button class="tab-btn" onclick="switchTab('tab-history', this)">🕒 5. ประวัติการสร้าง (History)</button></li>
+            <li><button class="tab-btn" onclick="switchTab('tab-about', this)">ℹ️ เกี่ยวกับเครื่องมือนี้ (About)</button></li>
         </ul>
         
         <div class="sidebar-footer">
             <div style="margin-bottom: 8px; color: #d1d5db;">
-                🧪 <b>Project ทดลอง</b> <span class="version-badge">v.1.2</span>
+                🧪 <b>Project ทดลอง</b> <span class="version-badge">v.1.3</span>
             </div>
             โดยนักศึกษา ป.โท <span class="highlight">วิทยาลัยพัฒนศาสตร์ ป๋วย อึ๊งภากรณ์</span><br>
             หลักสูตรศิลปศาสตรมหาบัณฑิต<br>สาขาวิชาการจัดการการพัฒนาและปฏิบัติการพัฒนา<br>
@@ -117,20 +117,7 @@
 
         <div class="content-wrapper">
             
-            <div id="tab-about" class="tab-pane active">
-                <h1 class="page-title">ℹ️ เกี่ยวกับเครื่องมือนี้</h1>
-                <p class="page-desc">ที่มาและแนวคิดในการพัฒนา AI Research Assistant</p>
-                <div class="card about-card">
-                    <p>แอปพลิเคชัน <strong>"AI Research Assistant | ว.ป๋วยฯ มธ."</strong> พัฒนาขึ้นเพื่อแก้ปัญหาความยุ่งยากในการใช้งาน AI ที่นักศึกษามักต้องเสียเวลาคิดคำสั่ง (Prompt) ที่ซับซ้อน และเผชิญปัญหา AI ตอบนอกลู่นอกทางหรือสร้างข้อมูลอ้างอิงปลอม (Hallucination)</p>
-                    <p style="margin-top: 15px;">แอปนี้จึงถูกออกแบบมาให้เป็น <strong>"พี่เลี้ยงอัจฉริยะ (AI Mentor)"</strong> ที่ฝังโครงสร้างคำสั่งขั้นสูงและกฎเหล็กทางวิชาการไว้เบื้องหลัง ผู้ใช้เพียงแค่กรอกข้อมูลสั้นๆ ระบบก็จะสร้างคำสั่งที่แม่นยำให้โดยอัตโนมัติ ช่วยจัดระเบียบการทำงานตามเส้นทางการทำวิจัยอย่างเป็นระบบ ตั้งแต่การประเมินหัวข้อไปจนถึงการจำลองสอบป้องกัน</p>
-                    <p style="margin-top: 15px; font-weight: 600; color: var(--tu-red);">🎯 ทำให้นักศึกษาไม่ต้องปวดหัวกับการเขียน Prompt เอง สามารถดึงศักยภาพของ AI มาช่วยงานวิชาการได้อย่างสะดวก รวดเร็ว และได้ผลลัพธ์ที่ลึกซึ้งน่าเชื่อถือตามมาตรฐานวิชาการอย่างแท้จริง</p>
-                    <div style="margin-top: 25px; text-align: center;">
-                        <button class="btn-primary" style="width: auto; padding: 10px 30px;" onclick="document.querySelectorAll('.sidebar-menu button')[1].click();">🚀 เริ่มต้นใช้งาน ประเมินหัวข้อวิจัย</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-feasibility" class="tab-pane">
+            <div id="tab-feasibility" class="tab-pane active">
                 <h1 class="page-title">💡 ประเมินความเป็นไปได้ของหัวข้อ</h1>
                 <p class="page-desc">วิเคราะห์หัวข้อวิจัยว่าใหญ่เกินไป ซ้ำซ้อน หรือมี Impact มากพอที่จะทำหรือไม่</p>
                 <div class="card">
@@ -217,6 +204,19 @@
                 
                 <div id="historyList">
                     </div>
+            </div>
+
+            <div id="tab-about" class="tab-pane">
+                <h1 class="page-title">ℹ️ เกี่ยวกับเครื่องมือนี้</h1>
+                <p class="page-desc">ที่มาและแนวคิดในการพัฒนา AI Research Assistant</p>
+                <div class="card about-card">
+                    <p>แอปพลิเคชัน <strong>"AI Research Assistant | ว.ป๋วยฯ มธ."</strong> พัฒนาขึ้นเพื่อแก้ปัญหาความยุ่งยากในการใช้งาน AI ที่นักศึกษามักต้องเสียเวลาคิดคำสั่ง (Prompt) ที่ซับซ้อน และเผชิญปัญหา AI ตอบนอกลู่นอกทางหรือสร้างข้อมูลอ้างอิงปลอม (Hallucination)</p>
+                    <p style="margin-top: 15px;">แอปนี้จึงถูกออกแบบมาให้เป็น <strong>"พี่เลี้ยงอัจฉริยะ (AI Mentor)"</strong> ที่ฝังโครงสร้างคำสั่งขั้นสูงและกฎเหล็กทางวิชาการไว้เบื้องหลัง ผู้ใช้เพียงแค่กรอกข้อมูลสั้นๆ ระบบก็จะสร้างคำสั่งที่แม่นยำให้โดยอัตโนมัติ ช่วยจัดระเบียบการทำงานตามเส้นทางการทำวิจัยอย่างเป็นระบบ ตั้งแต่การประเมินหัวข้อไปจนถึงการจำลองสอบป้องกัน</p>
+                    <p style="margin-top: 15px; font-weight: 600; color: var(--tu-red);">🎯 ทำให้นักศึกษาไม่ต้องปวดหัวกับการเขียน Prompt เอง สามารถดึงศักยภาพของ AI มาช่วยงานวิชาการได้อย่างสะดวก รวดเร็ว และได้ผลลัพธ์ที่ลึกซึ้งน่าเชื่อถือตามมาตรฐานวิชาการอย่างแท้จริง</p>
+                    <div style="margin-top: 25px; text-align: center;">
+                        <button class="btn-primary" style="width: auto; padding: 10px 30px;" onclick="document.querySelectorAll('.sidebar-menu button')[0].click();">🚀 เริ่มต้นใช้งาน ประเมินหัวข้อวิจัย</button>
+                    </div>
+                </div>
             </div>
 
             <div id="global-result" class="result-box">
