@@ -3,268 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เครื่องมือสร้าง Prompt สำหรับการวิจัยเพื่อการพัฒนา (ว.ป๋วยฯ มธ.)</title>
+    <title>AI Research Assistant | ว.ป๋วยฯ มธ.</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --text-dark: #111827; --text-main: #374151; --border: #d1d5db; --bg: #f9fafb;
-            --tu-red: #c11b17; --tu-yellow: #f1c40f; --tu-yellow-light: #fffde7;
+            --tu-red: #c11b17; --tu-red-hover: #a01612;
+            --tu-yellow: #f1c40f; --bg-light: #f3f4f6;
+            --sidebar-bg: #111827; --sidebar-hover: #1f2937;
+            --text-dark: #1f2937; --text-muted: #6b7280;
         }
-        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); position: relative; }
-        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--tu-red) 50%, var(--tu-yellow) 50%); border-top-left-radius: 16px; border-top-right-radius: 16px; }
-        h1 { text-align: center; color: var(--tu-red); margin-bottom: 5px; margin-top: 10px; font-weight: 600; font-size: 26px;}
-        p.subtitle { text-align: center; color: #64748b; margin-bottom: 30px; font-weight: 300; font-size: 16px;}
-        .form-group { margin-bottom: 24px; }
-        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-dark); }
-        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s; color: var(--text-dark); background-color: #ffffff; }
-        textarea { resize: vertical; min-height: 80px; }
-        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--tu-red); box-shadow: 0 0 0 3px rgba(193, 27, 23, 0.1); }
-        button { background-color: var(--tu-red); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Sarabun', sans-serif; width: 100%; transition: 0.3s; margin-top: 10px; }
-        button:hover { background-color: var(--tu-yellow); color: var(--tu-red); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg-light); color: var(--text-dark); display: flex; height: 100vh; overflow: hidden; }
         
-        .result-box { margin-top: 30px; border: 2px dashed var(--tu-red); border-radius: 12px; padding: 20px; background-color: var(--tu-yellow-light); display: none; }
-        .result-box h3 { margin-top: 0; color: var(--tu-red); font-weight: 600; }
-        #promptOutput { white-space: pre-wrap; background: white; padding: 18px; border-radius: 8px; border: 1px solid var(--border); font-size: 15px; color: var(--text-dark); margin-bottom: 15px; line-height: 1.7; }
-        .guide-box { margin-top: 20px; padding: 20px; background-color: white; border-left: 4px solid var(--tu-yellow); border-radius: 8px; font-size: 14.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        /* Sidebar Styles */
+        .sidebar { width: 280px; background-color: var(--sidebar-bg); color: white; display: flex; flex-direction: column; transition: 0.3s; z-index: 100; flex-shrink: 0; }
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid #374151; }
+        .sidebar-header h2 { font-size: 18px; font-weight: 600; color: white; display: flex; align-items: center; gap: 10px; }
+        .sidebar-header h2 span { color: var(--tu-yellow); }
+        .sidebar-menu { list-style: none; padding: 15px 10px; flex-grow: 1; overflow-y: auto; }
+        .sidebar-menu li { margin-bottom: 5px; }
+        .sidebar-menu button { width: 100%; text-align: left; background: none; border: none; color: #d1d5db; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-family: 'Sarabun', sans-serif; font-size: 15px; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .sidebar-menu button:hover { background-color: var(--sidebar-hover); color: white; }
+        .sidebar-menu button.active { background-color: var(--tu-red); color: white; font-weight: 600; }
+        .sidebar-divider { height: 1px; background: #374151; margin: 15px 10px; }
         
-        /* สไตล์สำหรับกล่องประวัติ */
-        .history-section { margin-top: 50px; border-top: 2px solid #e5e7eb; padding-top: 30px; display: none; }
-        .history-title { color: var(--tu-red); font-weight: 600; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .history-item { background: #f3f4f6; border-left: 4px solid #9ca3af; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; position: relative; }
-        .history-date { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
-        .history-topic { font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
-        .history-rq { color: #4b5563; font-style: italic; margin-bottom: 10px; }
-        .btn-copy-sm { background-color: #10b981; color: white; padding: 6px 12px; font-size: 13px; border-radius: 4px; width: auto; margin-top: 5px; display: inline-block; }
-        .btn-copy-sm:hover { background-color: #059669; color: white; }
-        .btn-clear { background: none; border: none; color: #9ca3af; font-size: 13px; cursor: pointer; text-decoration: underline; padding: 0; width: auto; margin: 0;}
-        .btn-clear:hover { color: var(--tu-red); background: none; }
+        /* Main Content Styles */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .topbar { background: white; padding: 15px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
+        .mobile-toggle { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dark); }
+        .content-wrapper { padding: 40px; max-width: 850px; margin: 0 auto; width: 100%; }
+        
+        /* Tab Content */
+        .tab-pane { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h1.page-title { font-size: 24px; color: var(--tu-red); margin-bottom: 10px; }
+        p.page-desc { color: var(--text-muted); margin-bottom: 30px; font-size: 15px; }
+        
+        /* Form Elements */
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-top: 4px solid var(--tu-yellow); }
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; font-size: 15px; }
+        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 15px; transition: 0.3s; background: #f9fafb; }
+        textarea { resize: vertical; min-height: 100px; }
+        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--tu-red); background: white; box-shadow: 0 0 0 3px rgba(193, 27, 23, 0.1); }
+        
+        .btn-primary { background-color: var(--tu-red); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; transition: 0.3s; margin-top: 10px; font-family: 'Sarabun', sans-serif;}
+        .btn-primary:hover { background-color: var(--tu-red-hover); box-shadow: 0 4px 12px rgba(193, 27, 23, 0.2); }
+        .btn-secondary { background-color: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.3s; font-family: 'Sarabun', sans-serif;}
+        .btn-secondary:hover { background-color: #4b5563; }
+        
+        /* Result Box */
+        .result-box { margin-top: 30px; border: 2px dashed #10b981; border-radius: 12px; padding: 25px; background-color: #ecfdf5; display: none; }
+        .result-box h3 { margin-top: 0; color: #047857; margin-bottom: 15px; font-size: 18px; }
+        .prompt-output { white-space: pre-wrap; background: white; padding: 20px; border-radius: 8px; border: 1px solid #a7f3d0; font-size: 15px; line-height: 1.7; margin-bottom: 15px; color: #065f46; max-height: 400px; overflow-y: auto; }
+        
+        /* History Item Styles */
+        .history-item { background: white; border-left: 5px solid var(--tu-red); padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .history-date { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+        .history-topic { font-weight: 600; font-size: 16px; margin-bottom: 5px; color: var(--text-dark); }
+        .history-task { font-size: 14px; color: var(--tu-red); margin-bottom: 15px; font-weight: 600;}
+        .btn-copy-sm { background-color: #10b981; color: white; padding: 8px 15px; font-size: 13px; border-radius: 6px; border: none; cursor: pointer; transition: 0.2s; font-family: 'Sarabun', sans-serif;}
+        .btn-copy-sm:hover { background-color: #059669; }
 
-        .footer-credit { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; }
-        .footer-credit span { font-weight: 600; color: var(--tu-red); }
-        .optional-badge { font-size: 12px; font-weight: normal; color: #6b7280; background: #e5e7eb; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -280px; height: 100%; }
+            .sidebar.open { left: 0; }
+            .mobile-toggle { display: block; }
+            .content-wrapper { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🎓 AI Prompt Creator for Development Studies</h1>
-    <p class="subtitle">เครื่องมือสร้างคำสั่ง AI สำหรับงานวิจัยด้านการจัดการการพัฒนาและปฏิบัติการพัฒนา</p>
-    
-    <div class="form-group">
-        <label>1. เป้าหมายของการวิเคราะห์ (Analysis Task)</label>
-        <select id="task">
-            <option value="Identify Gaps">1. วิเคราะห์แนวคิดและหาช่องว่างงานวิจัย (Identify Research Gaps)</option>
-            <option value="Thematic Outline">2. จัดกลุ่มตามกระบวนทัศน์ ทฤษฎี และปฏิบัติการ (Thematic Outline)</option>
-            <option value="Critical Synthesis">3. สังเคราะห์วรรณกรรมเชิงวิพากษ์เพื่อสังคม (Critical Synthesis)</option>
-            <option value="Methodology Review">4. สกัดวิธีวิทยาการวิจัย (Research Methodology Review)</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>2. ประเด็น/ปรากฏการณ์ที่สนใจ (Topic)</label>
-        <input type="text" id="topic" placeholder="เช่น การเปลี่ยนผ่านชนบท-เมือง, นโยบาย ESG">
-    </div>
-
-    <div class="form-group">
-        <label>3. คำถามวิจัย / สิ่งที่อยากรู้ (Research Question) <span class="optional-badge">แนะนำให้ใส่</span></label>
-        <textarea id="researchQuestion" placeholder="เช่น นโยบาย ESG ส่งผลกระทบต่อเศรษฐกิจฐานรากในชุมชนเมืองอย่างไร?"></textarea>
-    </div>
-
-    <button onclick="generatePrompt()" id="generateBtn">✨ สร้างคำสั่งสำหรับวิเคราะห์วรรณกรรม</button>
-
-    <div id="resultArea" class="result-box">
-        <h3>📋 คำสั่ง (Prompt) ของท่านพร้อมแล้ว!</h3>
-        <div id="promptOutput"></div>
-        <button onclick="copyToClipboard('promptOutput')" style="background-color: #c11b17; color: white;">📋 คัดลอกคำสั่งเพื่อนำไปใช้งาน</button>
-        
-        <div class="guide-box">
-            <strong style="color: #c11b17; font-size: 16px;">💡 คำแนะนำสำหรับการวิเคราะห์:</strong>
-            <ol style="margin-top: 10px; padding-left: 20px; margin-bottom: 0;">
-                <li>กดคัดลอกคำสั่ง แล้วนำไปวางในแชท AI (Claude, ChatGPT, Gemini)</li>
-                <li>เมื่อ AI ตอบกลับภาพรวมมาแล้ว <b>ให้ท่านแนบไฟล์บทความวิชาการ (PDF) จำนวน 3-10 บทความ</b> ส่งตามไปอีกครั้งเพื่อให้ AI วิเคราะห์เจาะลึก</li>
-            </ol>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 <span>AI</span> Navigator</h2>
         </div>
-    </div>
+        <ul class="sidebar-menu">
+            <li><button class="tab-btn active" onclick="switchTab('tab-feasibility', this)">💡 1. ประเมินหัวข้อ (รอด/ไม่รอด)</button></li>
+            <li><button class="tab-btn" onclick="switchTab('tab-litreview', this)">📚 2. ทบทวนวรรณกรรม</button></li>
+            <li><button class="tab-btn" onclick="switchTab('tab-skeleton', this)">✍️ 3. วางโครงร่าง & เขียน</button></li>
+            <li><button class="tab-btn" onclick="switchTab('tab-dna', this)">🎯 4. ถอดรหัส DNA & สอบจบ</button></li>
+            <div class="sidebar-divider"></div>
+            <li><button class="tab-btn" onclick="switchTab('tab-history', this)">🕒 5. ประวัติการสร้าง (History)</button></li>
+        </ul>
+    </nav>
 
-    <div id="historySection" class="history-section">
-        <div class="history-title">
-            <span>🕒 ประวัติการสร้างคำสั่ง (เครื่องนี้)</span>
-            <button class="btn-clear" onclick="clearHistory()">ล้างประวัติ</button>
+    <main class="main-content">
+        <div class="topbar">
+            <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+            <div style="font-weight: 600; color: var(--tu-red);">เครื่องมือช่วยวิจัยระดับบัณฑิตศึกษา (ว.ป๋วยฯ)</div>
         </div>
-        <div id="historyList">
+
+        <div class="content-wrapper">
+            
+            <div id="tab-feasibility" class="tab-pane active">
+                <h1 class="page-title">💡 ประเมินความเป็นไปได้ของหัวข้อ</h1>
+                <p class="page-desc">วิเคราะห์หัวข้อวิจัยว่าใหญ่เกินไป ซ้ำซ้อน หรือมี Impact มากพอที่จะทำหรือไม่</p>
+                <div class="card">
+                    <div class="form-group">
+                        <label>ประเด็นวิจัย / ชื่อเรื่องที่คิดไว้</label>
+                        <input type="text" id="feas-topic" placeholder="เช่น การจัดการขยะชุมชนด้วยหลัก ESG...">
+                    </div>
+                    <div class="form-group">
+                        <label>กลุ่มเป้าหมาย / พื้นที่ศึกษา (Setting)</label>
+                        <input type="text" id="feas-context" placeholder="เช่น ชุมชนริมคลองเปรมประชากร จ.ปทุมธานี">
+                    </div>
+                    <button class="btn-primary" onclick="generatePrompt('feasibility')">✨ สร้างคำสั่งประเมินหัวข้อ</button>
+                </div>
             </div>
-    </div>
 
-    <div class="footer-credit">พัฒนาโดย: นักศึกษา ป.โท <span>วิทยาลัยพัฒนศาสตร์ ป๋วย อึ๊งภากรณ์ มหาวิทยาลัยธรรมศาสตร์</span></div>
-</div>
+            <div id="tab-litreview" class="tab-pane">
+                <h1 class="page-title">📚 ผู้ช่วยทบทวนวรรณกรรม</h1>
+                <p class="page-desc">สกัดแนวคิด หาช่องว่าง และสังเคราะห์บทความวิจัย</p>
+                <div class="card">
+                    <div class="form-group">
+                        <label>เป้าหมายของการวิเคราะห์</label>
+                        <select id="lit-task">
+                            <option value="Identify Gaps">วิเคราะห์แนวคิดและหาช่องว่าง (Identify Gaps)</option>
+                            <option value="Thematic Outline">จัดกลุ่มประเด็นและทฤษฎี (Thematic Outline)</option>
+                            <option value="Critical Synthesis">สังเคราะห์วรรณกรรมเชิงวิพากษ์ (Critical Synthesis)</option>
+                            <option value="Methodology Review">สกัดและวิจารณ์วิธีวิทยา (Methodology Review)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ประเด็นที่สนใจ</label>
+                        <input type="text" id="lit-topic" placeholder="เช่น นโยบายความยากจน">
+                    </div>
+                    <div class="form-group">
+                        <label>คำถามวิจัย (ถ้ามี)</label>
+                        <textarea id="lit-rq" placeholder="ระบุสิ่งที่ต้องการหาคำตอบเป็นพิเศษ..."></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="generatePrompt('litreview')">✨ สร้างคำสั่งวิเคราะห์วรรณกรรม</button>
+                </div>
+            </div>
+
+            <div id="tab-skeleton" class="tab-pane">
+                <h1 class="page-title">✍️ ผู้ช่วยวางโครงร่างงานวิจัย</h1>
+                <p class="page-desc">สร้างพิมพ์เขียว (Skeleton) ของบทความ เพื่อจัดระเบียบตรรกะก่อนลงมือเขียนจริง</p>
+                <div class="card">
+                    <div class="form-group">
+                        <label>ชื่อเรื่อง / หัวข้อวิจัย</label>
+                        <input type="text" id="skel-topic" placeholder="ชื่อเรื่องงานวิจัยของคุณ">
+                    </div>
+                    <div class="form-group">
+                        <label>ระเบียบวิธีวิจัย (Methodology)</label>
+                        <input type="text" id="skel-method" placeholder="เช่น เชิงคุณภาพ สัมภาษณ์เชิงลึก 20 คน">
+                    </div>
+                    <button class="btn-primary" onclick="generatePrompt('skeleton')">✨ สร้างคำสั่งวางโครงร่าง (Skeleton)</button>
+                </div>
+            </div>
+
+            <div id="tab-dna" class="tab-pane">
+                <h1 class="page-title">🎯 ถอดรหัส DNA & จำลองสอบ</h1>
+                <p class="page-desc">ถอดรหัสรูปแบบวารสารเป้าหมาย หรือจำลองกรรมการ 5 สไตล์เพื่อซ้อมสอบป้องกัน</p>
+                <div class="card">
+                    <div class="form-group">
+                        <label>เลือกเครื่องมือ</label>
+                        <select id="dna-task">
+                            <option value="DNA">🔍 ถอดรหัส DNA วารสาร/เล่มรุ่นพี่ (Journal Reverse Engineering)</option>
+                            <option value="Defense">🛡️ จำลองคณะกรรมการสอบ 5 สไตล์ (Mock Defense)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ชื่อวารสารเป้าหมาย / ชื่ออาจารย์ที่ปรึกษา</label>
+                        <input type="text" id="dna-target" placeholder="เช่น วารสารพัฒนศาสตร์ หรือ ผศ.ดร. ...">
+                    </div>
+                    <button class="btn-primary" onclick="generatePrompt('dna')">✨ สร้างคำสั่ง</button>
+                </div>
+            </div>
+
+            <div id="tab-history" class="tab-pane">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h1 class="page-title">🕒 ประวัติการสร้างคำสั่ง (เครื่องนี้)</h1>
+                        <p class="page-desc" style="margin-bottom: 0;">ประวัติคำสั่งล่าสุด 10 รายการที่คุณเคยสร้างไว้ในเบราว์เซอร์นี้</p>
+                    </div>
+                    <button class="btn-secondary" onclick="clearHistory()">🗑️ ล้างประวัติทั้งหมด</button>
+                </div>
+                
+                <div id="historyList">
+                    </div>
+            </div>
+
+            <div id="global-result" class="result-box">
+                <h3>✅ คำสั่ง (Prompt) พร้อมใช้งาน!</h3>
+                <div id="prompt-output" class="prompt-output"></div>
+                <button class="btn-primary" onclick="copyToClipboard('prompt-output', this)" style="background-color: #059669; width: auto; padding: 10px 20px;">📋 คัดลอกคำสั่งนำไปใช้งาน</button>
+                <p style="font-size: 13px; color: #047857; margin-top: 10px;">นำคำสั่งนี้ไปวางในระบบ AI (ChatGPT, Claude, Gemini) ที่คุณต้องการได้เลยครับ</p>
+            </div>
+
+        </div>
+    </main>
 
 <script>
-    // ⚠️ นำ URL ใหม่จาก Apps Script มาใส่ตรงนี้ ⚠️
+    // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ ⚠️
     const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwa5J6fymqXchLrO943R89cQGjcw78PttRmFnmT-3Nsuuh72yitGRsgktFhk3g2MP6xGA/exec"; 
-
-    // ตัวแปรสำหรับเก็บ IP Address
     let userIP = "Unknown IP";
 
-    // โหลดประวัติและดึง IP ทันทีที่เปิดหน้าเว็บ
     window.onload = function() {
-        renderHistory();
+        renderHistory(); 
         
-        // ดึง IP ของผู้ใช้แบบเงียบๆ
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
-            .then(data => {
-                userIP = data.ip;
-            })
-            .catch(error => console.error('ไม่สามารถดึง IP ได้:', error));
+            .then(data => { userIP = data.ip; })
+            .catch(error => console.error('Error IP:', error));
     };
 
-    function generatePrompt() {
-        const btn = document.getElementById('generateBtn');
-        btn.innerText = "⏳ กำลังสร้างและบันทึกข้อมูล...";
-        
-        const taskName = document.getElementById('task').options[document.getElementById('task').selectedIndex].text;
-        const taskValue = document.getElementById('task').value;
-        const topic = document.getElementById('topic').value || "[โปรดระบุประเด็นการพัฒนาของท่าน]";
-        const researchQuestion = document.getElementById('researchQuestion').value.trim();
-
-        // แยก Prompt ตาม Task 
-        let frameworkInstruction = "";
-        
-        if(taskValue === "Identify Gaps") {
-            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาแบบองค์รวม (Holistic View) เพื่อสกัดข้อมูล 3 ส่วนหลัก ได้แก่:
-1. กระบวนทัศน์และทฤษฎีการพัฒนาที่ซ่อนอยู่ (Underlying Development Paradigms/Theories)
-2. บริบททางสังคม เศรษฐกิจ หรือการเมืองที่ส่งผลต่อปรากฏการณ์นี้ (Socio-economic & Political Contexts)
-3. ช่องว่างการวิจัย (Research Gaps) โดยเฉพาะในมิติของความเหลื่อมล้ำ สิทธิมนุษยชน หรือประเด็นที่ยังขาดการมองจากมุมมองของคนชายขอบ/ผู้ปฏิบัติการ (Bottom-up perspective)`;
-        } 
-        else if(taskValue === "Thematic Outline") {
-            frameworkInstruction = `โปรดจัดกลุ่มเนื้อหาจากเอกสารที่แนบมาโดย:
-- แบ่งตามประเด็นปัญหา (Themes), ทฤษฎีการพัฒนาที่ใช้ (Theories), หรือเครื่องมือในการปฏิบัติการ (Development Practices)
-- นำผลลัพธ์ของแต่ละเอกสารมาจัดวางเพื่อเปรียบเทียบจุดแข็งและข้อจำกัดในการแก้ปัญหา
-- วิเคราะห์ความขัดแย้ง (Conflicts) หรือความร่วมมือ (Collaborations) ระหว่างภาครัฐ ภาคเอกชน และภาคประชาสังคมที่ปรากฏในวรรณกรรม`;
-        }
-        else if(taskValue === "Critical Synthesis") {
-            frameworkInstruction = `โปรดสังเคราะห์วรรณกรรมจากเอกสารที่แนบมาในเชิงวิพากษ์ (Critical Synthesis) โดย:
-- รวบรวมองค์ความรู้เพื่อชี้ให้เห็นถึง "ความซับซ้อนและพลวัต (Dynamics)" ของปัญหาการพัฒนา
-- แทรกการตีความเชิงวิพากษ์ว่า แนวทางการพัฒนาในวรรณกรรมเหล่านี้นำไปสู่ความยั่งยืน ความเป็นธรรมทางสังคม หรือการเสริมพลัง (Empowerment) แก่ชุมชนอย่างแท้จริงหรือไม่
-- เชื่อมโยงย่อหน้าด้วยภาษาเชิงวิชาการที่สละสลวย ชี้ให้เห็นข้อถกเถียง (Debates) ที่สำคัญ`;
-        }
-        else if(taskValue === "Methodology Review") {
-            frameworkInstruction = `โปรดวิเคราะห์เอกสารที่แนบมาโดยเจาะลึกเฉพาะ "วิธีวิทยาการวิจัย (Research Methodology)" โดย:
-- สกัดและเปรียบเทียบระเบียบวิธีวิจัยที่แต่ละบทความใช้ (ทั้งเชิงปริมาณ เชิงคุณภาพ หรือแบบผสมผสาน)
-- อธิบายกระบวนการได้มาซึ่งข้อมูล (Data Collection) และการวิเคราะห์ (Data Analysis)
-- วิจารณ์ข้อจำกัดเชิงวิธีวิทยา (Methodological Limitations) ของงานเหล่านี้ ว่าอาจส่งผลต่ออคติหรือการมองข้ามเสียงของพื้นที่/ชุมชนไปหรือไม่`;
-        }
-
-        // โครงสร้าง Prompt
-        let promptText = `[Role]: จงสวมบทบาทเป็น "นักวิชาการด้านการพัฒนาสังคมและปฏิบัติการพัฒนา" (Scholar in Development Studies and Practice) ที่มีโลกทัศน์แบบองค์รวมและยึดมั่นในความเป็นธรรมทางสังคม
-[Topic]: สำหรับประเด็นการศึกษาเรื่อง "${topic}"
-[Task]: หน้าที่ของคุณคือ ${taskName.split('(')[0].trim()}`;
-
-        if (researchQuestion !== "") {
-            promptText += `\n[Research Question]: สิ่งที่ฉันต้องการค้นหาคำตอบเป็นพิเศษคือ "${researchQuestion}" โปรดโฟกัสที่การตอบคำถามนี้เป็นหลักในการวิเคราะห์`;
-        }
-
-        promptText += `\n\n[Core Objectives]:\n${frameworkInstruction}`;
-
-        promptText += `\n\n[Strict Rules - กฎเหล็กวิชาการระดับบัณฑิตศึกษา]:
-1. ห้ามมั่วข้อมูล (Strict No Hallucination): เมื่อฉันแนบเอกสาร PDF ให้ในภายหลัง ห้ามสร้างข้อมูลอ้างอิง ผู้แต่ง ปีที่พิมพ์ หรือข้อค้นพบขึ้นมาเองโดยเด็ดขาด 
-2. อิงข้อมูลจริง (Evidence-based): ให้วิเคราะห์ สังเคราะห์ และตอบคำถามโดยดึงข้อมูลจาก "เอกสาร PDF ที่ฉันจะแนบไปให้เท่านั้น" 
-3. ความซื่อสัตย์ (Integrity): หากประเด็นที่ฉันถาม ไม่มีระบุในเอกสารที่แนบไป ให้ตอบอย่างตรงไปตรงมาว่า "ไม่พบข้อมูลในเอกสาร"
-4. ระดับภาษา (Tone): ใช้ภาษาทางการแบบวิชาการสังคมศาสตร์ ลึกซึ้ง ปราศจากอคติ และเคารพความหลากหลาย
-5. รูปแบบการอ้างอิง: บังคับใช้รูปแบบ "APA 7th Edition" เท่านั้น (โปรดระบุแหล่งอ้างอิงในเนื้อหาทุกครั้งที่หยิบยกข้อค้นพบมากล่าวถึง)
-
-[Instruction]: สำหรับการตอบกลับในรอบแรกนี้ โปรดสรุป "ภาพรวมของประเด็นนี้" จากฐานข้อมูลของคุณมาให้ฉันอ่านก่อนอย่างสังเขป (ประมาณ 2-3 ย่อหน้า) เพื่อปูพื้นฐานความเข้าใจ จากนั้นให้ปิดท้ายประโยคว่า "โปรดแนบไฟล์เอกสารงานวิจัย (PDF) ของคุณ เพื่อเริ่มการวิเคราะห์เชิงลึกตามกรอบคิดข้างต้นได้เลยครับ"`;
-
-        document.getElementById('promptOutput').innerText = promptText;
-        document.getElementById('resultArea').style.display = 'block';
-        btn.innerText = "✨ สร้างคำสั่งสำหรับวิเคราะห์วรรณกรรม";
-
-        // บันทึกข้อมูล
-        saveToLocalHistory(taskName, topic, researchQuestion, promptText);
-        saveToGoogleSheet(taskName, topic, researchQuestion, "", promptText); // ส่งไปหลังบ้าน
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
     }
 
-    function saveToLocalHistory(task, topic, rq, prompt) {
-        let history = JSON.parse(localStorage.getItem('promptHistory')) || [];
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('global-result').style.display = 'none';
+        
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+        
+        if(tabId === 'tab-history') {
+            renderHistory();
+        }
+
+        if(window.innerWidth <= 768) toggleSidebar();
+    }
+
+    function generatePrompt(mode) {
+        let promptText = "";
+        let logTask = "";
+        let logTopic = "";
+        let logRQ = "";
+
+        if (mode === 'feasibility') {
+            const topic = document.getElementById('feas-topic').value || "[ระบุหัวข้อ]";
+            const context = document.getElementById('feas-context').value || "[ระบุพื้นที่]";
+            logTask = "Feasibility Check"; logTopic = topic; logRQ = context;
+            
+            promptText = `[Role]: จงสวมบทบาทเป็น "อาจารย์ที่ปรึกษาวิทยานิพนธ์ (Thesis Advisor)" สายสังคมศาสตร์และการพัฒนาที่เข้มงวดและมองโลกตามความเป็นจริง
+[Task]: โปรดประเมิน "ความเป็นไปได้ (Feasibility & Viability)" ของแนวคิดหัวข้อวิจัยต่อไปนี้:
+- หัวข้อ: "${topic}"
+- พื้นที่/กลุ่มเป้าหมาย: "${context}"
+
+[Instructions]: โปรดวิเคราะห์และสับหัวข้อนี้อย่างตรงไปตรงมา ห้ามอวย โดยแบ่งการประเมินเป็น 3 มิติ ดังนี้:
+1. Foundation (รอด หรือ ไม่รอด): ขอบเขตงานใหญ่เกินกว่าที่นักศึกษา ป.โท จะทำเสร็จใน 1 ปีหรือไม่? การลงพื้นที่นี้มีความเสี่ยงหรือยากต่อการเข้าถึงข้อมูลจริงไหม? (ถ้าไม่รอด ควรลดสโคปอย่างไร?)
+2. Differentiation (ความโดดเด่น): หัวข้อนี้มีความซ้ำซ้อน (Redundancy) กับงานวิจัยที่มีอยู่เกลื่อนตลาดแล้วหรือไม่? ข้อถกเถียงทางสังคม (Social Controversy) ของเรื่องนี้คืออะไร?
+3. Impact (การเปลี่ยนแปลง): งานชิ้นนี้สามารถนำไปสู่ข้อเสนอแนะเชิงนโยบาย (Policy Actionability) หรือเสริมพลังให้ชุมชนได้อย่างไร?
+
+[Output]: สรุปว่าหัวข้อนี้ "Go (ลุยต่อได้)" หรือ "No-Go (ต้องปรับแก้)" พร้อมเสนอคีย์เวิร์ด (Keywords) ภาษาไทยและอังกฤษ 5 คำ เพื่อให้ฉันนำไปค้นหางานวิจัยเดิมต่อ`;
+        } 
+        
+        else if (mode === 'litreview') {
+            const task = document.getElementById('lit-task');
+            const taskName = task.options[task.selectedIndex].text;
+            const topic = document.getElementById('lit-topic').value || "[ระบุประเด็น]";
+            const rq = document.getElementById('lit-rq').value;
+            logTask = task.value; logTopic = topic; logRQ = rq;
+            
+            promptText = `[Role]: นักวิชาการด้านการพัฒนาสังคม
+[Topic]: สำหรับประเด็น "${topic}"
+[Task]: หน้าที่ของคุณคือ ${taskName.split('(')[0].trim()}
+${rq ? `\n[Research Question]: สิ่งที่ฉันต้องการค้นหาคำตอบเป็นพิเศษคือ "${rq}"` : ''}
+
+[Strict Rules]: เมื่อฉันแนบเอกสาร PDF ให้ในภายหลัง ห้ามสร้างข้อมูลอ้างอิงขึ้นมาเองเด็ดขาด อิงข้อมูลจากเอกสารที่แนบเท่านั้น หากจะอ้างสิ่งอื่นให้พิมพ์ [ต้องหาอ้างอิงเพิ่ม]
+
+[Instruction]: สำหรับรอบแรกนี้ โปรดสรุปภาพรวมของประเด็นนี้จากฐานข้อมูลของคุณมาสั้นๆ 2 ย่อหน้า จากนั้นให้ปิดท้ายว่า "โปรดแนบไฟล์เอกสารวิจัยของคุณ (PDF) เพื่อเริ่มการวิเคราะห์เชิงลึก"`;
+        }
+
+        else if (mode === 'skeleton') {
+            const topic = document.getElementById('skel-topic').value || "[ระบุหัวข้อ]";
+            const method = document.getElementById('skel-method').value || "[ระบุระเบียบวิธี]";
+            logTask = "Skeleton Builder"; logTopic = topic; logRQ = method;
+
+            promptText = `[Role]: จงสวมบทบาทเป็น "AI Manuscript Development Mentor" 
+[Task]: ฉันกำลังจะเขียนบทความวิจัย/โครงร่างวิทยานิพนธ์ เรื่อง "${topic}" โดยใช้วิธีวิทยาแบบ "${method}"
+[Strict Rules]: ห้ามเขียนเนื้อหาให้ฉันเด็ดขาด! ฉันต้องการให้คุณสร้าง "โครงกระดูก (Skeleton / Outline)" เพื่อจัดระเบียบความคิดเท่านั้น
+
+[Instructions]: โปรดสร้างโครงร่างระดับย่อหน้า (Paragraph-level Outline) สำหรับบทนำ (Introduction) และ ทบทวนวรรณกรรม (Literature Review) โดยระบุว่า:
+- ย่อหน้าที่ 1 ควรเปิดเรื่องด้วยกลยุทธ์แบบไหน?
+- ย่อหน้าต่อๆ ไป ควรเชื่อมโยงตรรกะ (Logic Flow) เข้าหากันอย่างไร?
+- จุดไหนควรเป็นที่อยู่ของ "ช่องว่างงานวิจัย (Research Gap)"
+- วางสัญลักษณ์ [Insert Citation: ประเด็น...] ไว้ในจุดที่ฉันต้องไปหาเปเปอร์จริงมาอ้างอิง (ห้ามแต่งชื่อเปเปอร์เองเด็ดขาด)`;
+        }
+
+        else if (mode === 'dna') {
+            const task = document.getElementById('dna-task').value;
+            const target = document.getElementById('dna-target').value || "[ระบุเป้าหมาย]";
+            logTask = task; logTopic = target; logRQ = "";
+
+            if(task === 'DNA') {
+                promptText = `[Role]: ผู้เชี่ยวชาญด้าน Journal Reverse Engineering
+[Target]: ฉันต้องการตีพิมพ์/สอบจบ กับ "${target}"
+[Instructions]: ฉันกำลังจะแนบไฟล์ PDF บทความวิจัย/วิทยานิพนธ์รุ่นพี่ ที่ผ่านการตีพิมพ์หรือได้เกรดดีจากที่นี่ จำนวน 3-5 ชิ้น 
+โปรดถอดรหัส (Decode) "DNA หรือ กฎที่ไม่ได้เขียนไว้" ของแหล่งนี้ ใน 3 มิติ:
+1. Argumentation Style: พวกเขานิยมเปิดเรื่องแบบไหน? (เริ่มจากปัญหา หรือ เริ่มจากทฤษฎี)
+2. Citation Culture: นิยมอ้างอิงงานเก่าระดับฐานราก หรือเน้นงานใหม่ไม่เกิน 5 ปี?
+3. Writing Culture: ระดับความเป็นทางการ ความยาวประโยค และโครงสร้างของ Discussion เป็นอย่างไร?
+หลังจากวิเคราะห์เสร็จ โปรดสร้าง Style Guide สั้นๆ ให้ฉันเขียนงานได้ตรงตาม DNA ของที่นี่`;
+            } else {
+                promptText = `[Role]: คุณคือ "คณะกรรมการสอบ 5 สไตล์ (5-Lens Mock Defense)" แห่ง ว.ป๋วยฯ มธ. ประกอบด้วย:
+1. The Theorist (สายทฤษฎีจ๋า)
+2. The Fieldworker (สายลงพื้นที่/ปฏิบัติการ)
+3. The Policy Maker (สายข้อเสนอแนะเชิงนโยบาย)
+4. The Equity-Critical (สายวิพากษ์ความเหลื่อมล้ำ)
+5. The Logician (สายตรรกะและโครงสร้าง)
+
+[Instructions]: ฉันกำลังจะป้อน "ร่างเนื้อหางานวิจัย (Draft)" ของฉันให้คุณอ่าน 
+หน้าที่ของคุณคือ สลับกันสวมบทบาทเป็นกรรมการทั้ง 5 คน แล้ว "รุมวิจารณ์ (Grill)" งานของฉันอย่างหนักหน่วง หาจุดบอด (Blind spots) การเคลมเกินจริง (Overclaims) และตรรกะที่ขาดหายไป 
+ห้ามชมเชย! ขอให้ตั้งคำถามที่ท้าทายที่สุดเพื่อให้ฉันนำไปเตรียมตัวตอบคำถามในการสอบจริง`;
+            }
+        }
+
+        document.getElementById('prompt-output').innerText = promptText;
+        document.getElementById('global-result').style.display = 'block';
+        
+        saveToLocalHistory(logTask, logTopic, promptText);
+        saveToGoogleSheet(logTask, logTopic, logRQ, "", promptText);
+    }
+
+    function saveToLocalHistory(task, topic, prompt) {
+        let history = JSON.parse(localStorage.getItem('appPromptHistory')) || [];
         history.unshift({
             date: new Date().toLocaleString('th-TH'),
-            task: task.split('(')[0].trim(),
+            task: task,
             topic: topic,
-            rq: rq,
             prompt: prompt
         });
         if(history.length > 10) history.pop(); 
-        localStorage.setItem('promptHistory', JSON.stringify(history));
-        renderHistory();
+        
+        localStorage.setItem('appPromptHistory', JSON.stringify(history));
     }
 
     function renderHistory() {
         const historyList = document.getElementById('historyList');
-        const historySection = document.getElementById('historySection');
-        let history = JSON.parse(localStorage.getItem('promptHistory')) || [];
+        let history = JSON.parse(localStorage.getItem('appPromptHistory')) || [];
 
         if (history.length === 0) {
-            historySection.style.display = 'none';
+            historyList.innerHTML = '<div style="text-align:center; padding: 40px; color: #6b7280; background: white; border-radius: 8px; border: 1px dashed #d1d5db;">ยังไม่มีประวัติการใช้งานในระบบครับ ลองสร้างคำสั่งในแท็บต่างๆ ดูสิ!</div>';
             return;
         }
 
-        historySection.style.display = 'block';
         historyList.innerHTML = '';
-
         history.forEach((item, index) => {
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
             
             historyItem.innerHTML = `
                 <div class="history-date">${item.date}</div>
-                <div class="history-topic">หัวข้อ: ${item.topic}</div>
-                <div style="font-size: 13px; color: #4b5563; margin-bottom: 5px;">งาน: ${item.task}</div>
-                ${item.rq ? `<div class="history-rq">คำถามวิจัย: "${item.rq}"</div>` : ''}
+                <div class="history-topic">${item.topic}</div>
+                <div class="history-task">📌 หมวดงาน: ${item.task}</div>
                 <div id="hist-prompt-${index}" style="display:none;">${item.prompt}</div>
-                <button class="btn-copy-sm" onclick="copyToClipboard('hist-prompt-${index}')">📋 คัดลอกคำสั่งนี้อีกครั้ง</button>
+                <button class="btn-copy-sm" onclick="copyToClipboard('hist-prompt-${index}', this)">📋 คัดลอกคำสั่งนี้อีกครั้ง</button>
             `;
             historyList.appendChild(historyItem);
         });
     }
 
     function clearHistory() {
-        if(confirm('คุณต้องการลบประวัติการสร้างคำสั่งในเครื่องนี้ทั้งหมดใช่หรือไม่?')) {
-            localStorage.removeItem('promptHistory');
+        if(confirm('คุณต้องการลบประวัติคำสั่งในเบราว์เซอร์นี้ทั้งหมดใช่หรือไม่?')) {
+            localStorage.removeItem('appPromptHistory');
             renderHistory();
         }
     }
 
-    function copyToClipboard(elementId) {
-        const textToCopy = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert("คัดลอกคำสั่งสำเร็จ! นำไปวางใน AI ได้เลย (แล้วค่อยแนบ PDF ตามไปในรอบถัดไปนะครับ)");
+    // --- อัปเดตฟังก์ชันคัดลอก (นำ Alert ออก เปลี่ยนข้อความปุ่มแทน) ---
+    function copyToClipboard(elementId, btn) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            // เช็คว่ามีปุ่มส่งมาไหม ถ้ามีให้เปลี่ยนข้อความชั่วคราว
+            if(btn) {
+                const originalText = btn.innerText; // จำข้อความเดิมไว้
+                btn.innerText = "✅ คัดลอกแล้ว!"; // เปลี่ยนข้อความใหม่
+                
+                // ให้รอ 2 วินาที แล้วกลับเป็นข้อความเดิม
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000); 
+            }
         }).catch(err => {
-            alert("ไม่สามารถคัดลอกได้ กรุณาคลุมดำและคัดลอกด้วยตัวเองครับ");
+            console.error("ไม่สามารถคัดลอกได้: ", err);
         });
     }
 
-    // ฟังก์ชันส่งข้อมูลไป Google Sheets (ระบบหลังบ้าน) โดยแนบตัวแปร IP เข้าไปด้วย
     function saveToGoogleSheet(task, topic, rq, context, prompt) {
         if(!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL === "ใส่_URL_ที่ได้จาก_APPS_SCRIPT_ตรงนี้") return; 
         
         fetch(GOOGLE_SHEET_API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
+            method: 'POST', mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                task: task,
-                topic: topic,
-                researchQuestion: rq,
-                previousContext: context,
-                generatedPrompt: prompt,
-                ipAddress: userIP,           // <--- ส่ง IP ไปที่หลังบ้านตรงนี้
-                timestamp: new Date().toLocaleString('th-TH')
+                task: task, topic: topic, researchQuestion: rq,
+                previousContext: context, generatedPrompt: prompt,
+                ipAddress: userIP, timestamp: new Date().toLocaleString('th-TH')
             })
-        }).then(() => console.log("ส่งข้อมูลสำเร็จ! IP: " + userIP))
-          .catch(err => console.error("Error saving to sheet:", err));
+        }).catch(err => console.error(err));
     }
 </script>
-
 </body>
 </html>
